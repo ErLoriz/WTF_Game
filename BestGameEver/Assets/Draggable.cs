@@ -9,7 +9,7 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
 {
 
     public Transform parentToReturnTo = null;
-
+    public Transform placeHolderParent = null;
     GameObject placeholder = null;
 
     public enum Slot { MANO, CAMPO };
@@ -30,6 +30,7 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
         placeholder.transform.SetSiblingIndex(this.transform.GetSiblingIndex());
 
         parentToReturnTo = this.transform.parent;
+        placeHolderParent = parentToReturnTo;
         this.transform.SetParent(this.transform.parent.parent);
 
         GetComponent<CanvasGroup>().blocksRaycasts = false;
@@ -43,31 +44,24 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
 
         this.transform.position = eventData.position;
 
-        int newSiblingIndex = placeholder.transform.GetSiblingIndex();
+        if (placeholder.transform.parent != placeHolderParent)
+            placeholder.transform.SetParent(placeHolderParent);
 
-        for (int i = 0; i < parentToReturnTo.childCount; i++)
+        int newSiblingIndex = placeHolderParent.childCount;
+
+        for (int i = 0; i < placeHolderParent.childCount; i++)
         {
-
-            if(this.transform.position.x < parentToReturnTo.GetChild(i).position.x)
+            if(this.transform.position.x < placeHolderParent.GetChild(i).position.x)
             {
-
                 newSiblingIndex = i;
-
                 if (placeholder.transform.GetSiblingIndex() < newSiblingIndex)
                 {
-
                     newSiblingIndex--;
                     break;
-
                 }
-
-                placeholder.transform.SetSiblingIndex(newSiblingIndex);
-                break;
-
             }
-
+            placeholder.transform.SetSiblingIndex(newSiblingIndex);
         }
-
     }
 
     public void OnEndDrag(PointerEventData eventData)
