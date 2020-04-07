@@ -18,7 +18,7 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
     public void OnBeginDrag(PointerEventData eventData)
     {
         
-        if (tipoCarta == Slot.MANO || tipoCarta == Slot.MANO_ENEMIGO)
+        if (tipoCarta == Slot.MANO)
         {
             Debug.Log("OnBeginDrag");
             placeholder = new GameObject();
@@ -45,7 +45,7 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
     public void OnDrag(PointerEventData eventData)
     {
         //Debug.Log("OnDrag");
-        if (tipoCarta == Slot.MANO || tipoCarta == Slot.MANO_ENEMIGO)
+        if (tipoCarta == Slot.MANO)
         {
             this.transform.position = eventData.position;
 
@@ -73,18 +73,19 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
     public void OnEndDrag(PointerEventData eventData)
     {
 
-        if (tipoCarta == Slot.MANO || tipoCarta == Slot.MANO_ENEMIGO)
+        if (tipoCarta == Slot.MANO)
         {
 
-            Debug.Log("OnEndDrag");
-
+            //Debug.Log("OnEndDrag");
+           
             this.transform.SetParent(parentToReturnTo);
             this.transform.SetSiblingIndex(placeholder.transform.GetSiblingIndex());
             GetComponent<CanvasGroup>().blocksRaycasts = true;
-            tipoCarta = Slot.CAMPO;
-
             //EventSystem.current.RaycastAll(eventData);
             Destroy(placeholder);
+            if (gameObject.name == ("Campo"))
+                tipoCarta = Slot.CAMPO;
+            
         }
     }
 

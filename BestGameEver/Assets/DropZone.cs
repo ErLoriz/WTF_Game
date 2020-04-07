@@ -15,12 +15,17 @@ public class DropZone : MonoBehaviour, IDropHandler , IPointerEnterHandler , IPo
         if (eventData.pointerDrag == null)
             return;
 
-        Draggable d = eventData.pointerDrag.GetComponent<Draggable>();
-        if (d != null)
+        if (gameObject.name == ("Campo"))
         {
-            if (tipoCarta != Draggable.Slot.MANO)
+
+            Draggable d = eventData.pointerDrag.GetComponent<Draggable>();
+            if (d != null)
             {
-                d.placeHolderParent = this.transform;
+                if (tipoCarta != Draggable.Slot.MANO)
+                {
+                    d.placeHolderParent = this.transform;
+                }
+
             }
 
         }
@@ -33,16 +38,22 @@ public class DropZone : MonoBehaviour, IDropHandler , IPointerEnterHandler , IPo
 
         if (eventData.pointerDrag == null)
             return;
+            
 
-        Draggable d = eventData.pointerDrag.GetComponent<Draggable>();
-        if (d != null && d.placeHolderParent == this.transform)
+
+        if (gameObject.name == ("Campo"))
         {
-            if (tipoCarta != Draggable.Slot.MANO)
+            Draggable d = eventData.pointerDrag.GetComponent<Draggable>();
+            if (d != null && d.placeHolderParent == this.transform)
             {
-                d.placeHolderParent = this.transform;
-            }
+                if (tipoCarta != Draggable.Slot.MANO)
+                {
+                    d.placeHolderParent = this.transform;
+                }
 
+            }
         }
+
 
     }
 
@@ -50,17 +61,20 @@ public class DropZone : MonoBehaviour, IDropHandler , IPointerEnterHandler , IPo
     {
         Debug.Log(eventData.pointerDrag.name + " was droppd on " + gameObject.name);
 
-
-
-        Draggable d = eventData.pointerDrag.GetComponent<Draggable>();
-        if(d != null)
+        if (gameObject.name == ("Campo"))
         {
-            if(tipoCarta != Draggable.Slot.MANO)
+            Draggable d = eventData.pointerDrag.GetComponent<Draggable>();
+            if(d != null)
             {
-                d.parentToReturnTo = this.transform;
-            }
+                if(tipoCarta != Draggable.Slot.MANO)
+                {
+                    d.parentToReturnTo = this.transform;
+                }
 
+            }
         }
+
+
 
     }
 
