@@ -13,7 +13,7 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
     GameObject placeholder = null;
 
     public enum Slot { MANO, CAMPO, CAMPO_OFF, MANO_ENEMIGO, CAMPO_ENEMIGO };
-    public Slot tipoCarta = Slot.MANO;
+    public Slot tipoCarta;
 
     public void OnBeginDrag(PointerEventData eventData)
     {
@@ -81,11 +81,23 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
             this.transform.SetParent(parentToReturnTo);
             this.transform.SetSiblingIndex(placeholder.transform.GetSiblingIndex());
             GetComponent<CanvasGroup>().blocksRaycasts = true;
-            //EventSystem.current.RaycastAll(eventData);
+           // EventSystem.current.RaycastAll(eventData);
             Destroy(placeholder);
-            if (gameObject.name == ("Campo"))
-                tipoCarta = Slot.CAMPO;
-            
+
+           
+
+          //  DropZone d = eventData.pointerDrag.GetComponent<DropZone>();
+
+            Debug.Log("Nombre de gameobject........... " + gameObject.name);
+
+          //  if (gameObject.name == ("Campo"))
+           // {
+
+               
+           // }
+           
+            // d.tipoCarta = Draggable.Slot.CAMPO;
+
         }
     }
 

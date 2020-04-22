@@ -16,6 +16,7 @@ TagManager:
   - CartasManoEn
   - CartaCampoEn
   - CampoEnemigo
+  - CartaCampo
   layers:
   - Default
   - TransparentFX

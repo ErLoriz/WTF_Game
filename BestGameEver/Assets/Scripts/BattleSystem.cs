@@ -9,10 +9,14 @@ public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST }
 public class BattleSystem : MonoBehaviour
 {
 
+    ObjetoCarta oc = new ObjetoCarta();
+
     // Thread tt = new Thread(ThreadTiempo.ThreadTemp);
+
 
     public int CartasManoCant;
     public GameObject Carta;
+    public GameObject CartaEnemiga;
     public GameObject[] CartasMano;
     public Button botonPasar;
 
@@ -109,6 +113,8 @@ public class BattleSystem : MonoBehaviour
         {
             if (GameObject.FindGameObjectsWithTag("CartasManoEn").Length > 0) // Selecciona una carta aleatoria de la mano
             {
+
+               
                 CartasMano = GameObject.FindGameObjectsWithTag("CartasManoEn");
                 var selecciondeCarta = Random.Range(0, GameObject.FindGameObjectsWithTag("CartasManoEn").Length);
                 Carta = CartasMano[selecciondeCarta];
@@ -127,6 +133,37 @@ public class BattleSystem : MonoBehaviour
 
     void TurnBatle()//Lucha
     {
+        //seleccionar la primera carta del otro campo
+
+        bool cartaEnemigaSelect = false;
+    
+        CartasMano = GameObject.FindGameObjectsWithTag("CartaCampo");
+        if (CartasMano.Length != 0)
+        {
+            CartaEnemiga = CartasMano[0];
+            cartaEnemigaSelect = true;
+      
+        }
+       
+        //Selecciona la primera carta de su campo
+        CartasMano = GameObject.FindGameObjectsWithTag("CartaCampoEn");
+        Carta = CartasMano[0];
+        //combate
+        if (cartaEnemigaSelect)
+        {
+            Debug.Log("Inicia el combate:");
+            Debug.Log("La carta de la IA tiene " + Carta.GetComponent<ObjetoCarta>().getAtaque() + " de daño");
+            Debug.Log("Tu carta tiene " + CartaEnemiga.GetComponent<ObjetoCarta>().getVida() + " de vida");
+            CartaEnemiga.GetComponent<ObjetoCarta>().perderVida(Carta.GetComponent<ObjetoCarta>().getAtaque());
+            Debug.Log("Despues del combate tu carta tiene  " + CartaEnemiga.GetComponent<ObjetoCarta>().getVida() + " de vida");
+
+            Carta.GetComponent<ObjetoCarta>().perderVida(CartaEnemiga.GetComponent<ObjetoCarta>().getAtaque());
+        }
+      
+
+
+
+
 
     }
 

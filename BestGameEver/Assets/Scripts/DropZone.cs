@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class DropZone : MonoBehaviour, IDropHandler , IPointerEnterHandler , IPointerExitHandler
 {
 
-    public Draggable.Slot tipoCarta = Draggable.Slot.MANO;
+    public Draggable.Slot tipoCarta;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -24,6 +25,9 @@ public class DropZone : MonoBehaviour, IDropHandler , IPointerEnterHandler , IPo
                 if (tipoCarta != Draggable.Slot.MANO)
                 {
                     d.placeHolderParent = this.transform;
+                   
+                  
+                   
                 }
 
             }
@@ -57,7 +61,7 @@ public class DropZone : MonoBehaviour, IDropHandler , IPointerEnterHandler , IPo
 
     }
 
-    public void OnDrop(PointerEventData eventData)
+    public async void OnDrop(PointerEventData eventData)
     {
         Debug.Log(eventData.pointerDrag.name + " was droppd on " + gameObject.name);
 
@@ -69,6 +73,14 @@ public class DropZone : MonoBehaviour, IDropHandler , IPointerEnterHandler , IPo
                 if(tipoCarta != Draggable.Slot.MANO)
                 {
                     d.parentToReturnTo = this.transform;
+
+                    await ChangeTipeAsync();
+
+                    d.tipoCarta = Draggable.Slot.CAMPO;
+                    d.transform.gameObject.tag = "CartaCampo";
+                    Debug.Log("Nombre de la carta tirada al campo:.................... " + this.name);
+
+
                 }
 
             }
@@ -77,5 +89,24 @@ public class DropZone : MonoBehaviour, IDropHandler , IPointerEnterHandler , IPo
 
 
     }
+
+    public void ChangeTipe()
+    {
+
+        Thread.Sleep(1);
+
+        
+    }
+    async System.Threading.Tasks.Task<bool> ChangeTipeAsync()
+    {
+        bool bol = true;
+        await System.Threading.Tasks.Task.Run(() =>
+        {
+            ChangeTipe();
+        }
+        );
+        return bol;
+    }
+
 
 }
