@@ -3,21 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Threading;
+using System;
 
 public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST }
 
 public class BattleSystem : MonoBehaviour
 {
 
-    ObjetoCarta oc = new ObjetoCarta();
-
     // Thread tt = new Thread(ThreadTiempo.ThreadTemp);
 
-
+    public bool situacionCompatible;
     public int CartasManoCant;
+    public GameObject[] PlayersArray; 
+    public GameObject Jugador;
+    public GameObject IA;
     public GameObject Carta;
     public GameObject CartaEnemiga;
-    public GameObject[] CartasMano;
+    public GameObject[] CartasArray;
     public Button botonPasar;
 
     public Text TextoTurno;
@@ -26,9 +28,24 @@ public class BattleSystem : MonoBehaviour
 
     public BattleState state;
 
+    int time = 0;
+    
+    public ObjetoCarta.Elemento tipoElemento;
+
+    public Draggable.Slot tipoCarta;
+    public DropZone zone;
+
+
     // Start is called before the first frame update
     void Start()
     {
+        zone = GameObject.FindGameObjectWithTag("Campo").GetComponent<DropZone>();
+        PlayersArray = GameObject.FindGameObjectsWithTag("Jugador");
+        Jugador = PlayersArray[0];
+
+        PlayersArray = GameObject.FindGameObjectsWithTag("IA");
+        IA = PlayersArray[0];
+
         state = BattleState.START;
         SetupBattle();
     }
@@ -37,7 +54,7 @@ public class BattleSystem : MonoBehaviour
     {
         //Saldra una pantalla con 1 carta a elegir
 
-        var number = Random.Range(1, 3);
+        var number = UnityEngine.Random.Range(1, 3);
 
         TextoTurno.text = "Turno " + number.ToString();
 
@@ -60,6 +77,7 @@ public class BattleSystem : MonoBehaviour
 
     public void PlayerTurn()
     {
+        zone.tipoCarta = Draggable.Slot.CAMPO;
         botonPasar.enabled = true;
         TextoTurno.text = "Tu turno";
 
@@ -76,110 +94,402 @@ public class BattleSystem : MonoBehaviour
 
     async void EnemyTurn()
     {
+        zone.tipoCarta = Draggable.Slot.CAMPO_OFF;
         botonPasar.enabled = false;
-        //   tt.Start();
-        TextoTurno.text = "Enemigo";
+        TextoTurno.text = "Enem.F1";
         Debug.Log("Inicia el turno del enemigo");
-        await TimeForAIAsync();
+        time = UnityEngine.Random.Range(300, 1000);
+        await TimeForAIAsync(time);
+
+        CartasArray = GameObject.FindGameObjectsWithTag("CartaCampoEn");
+
+        for (int i = 0; i < CartasArray.Length; i++)
+        {
+            CartasArray[i].GetComponent<ObjetoCarta>().setActiva(true);
+        }
+
+
         TurnBuy();
-        await TimeForAIAsync();
+        time = UnityEngine.Random.Range(800,1000);
+        await TimeForAIAsync(time);
         TurnCards();
-        await TimeForAIAsync();
+        time = UnityEngine.Random.Range(4000, 10000);
+        await TimeForAIAsync(time);
+        TextoTurno.text = "Enem.F2";
+
         TurnBatle();
-        Debug.Log("Fin del turno del enemigo");
-
-        TextoTurno.text = "Enemigo";
-
-        state = BattleState.PLAYERTURN;
-        PlayerTurn();
-
+    
+ 
     }
 
 
     void TurnBuy()//Compra
     {
+      
+
 
     }
 
     async void TurnCards()//Mueve cartas de la mano al campo
     {
-        CartasManoCant = GameObject.FindGameObjectsWithTag("CartasManoEn").Length;
-        Debug.Log("El enemigo tiene: " + CartasManoCant + " cartas en la mano");
+        GameObject[] CartasArrayEnCampo;
+        GameObject[] CartasArrayEnMano;
+
+        int maximaCartasCampo = 7;
 
 
-        var ramd = Random.Range(0, GameObject.FindGameObjectsWithTag("CartasManoEn").Length);
-        var n = 0;
-        do // Elije el numero de carta que va a sacar de forma aleatoria
+
+        var modoIA = UnityEngine.Random.Range(0, 2); //Dos modos, uno conservador y otro agresivo
+
+        var tipoRamdonSelect = UnityEngine.Random.Range(0, 3); //Elije su tipoMain
+
+        tipoRamdonSelect = 0;
+
+        if (tipoRamdonSelect == 0)
         {
-            if (GameObject.FindGameObjectsWithTag("CartasManoEn").Length > 0) // Selecciona una carta aleatoria de la mano
+            tipoElemento = ObjetoCarta.Elemento.Aire;
+        }
+        else if (tipoRamdonSelect == 1)
+        {
+            tipoElemento = ObjetoCarta.Elemento.Agua;
+        }
+        else if (tipoRamdonSelect == 2)
+        {
+            tipoElemento = ObjetoCarta.Elemento.Tierra;
+        }
+        else if (tipoRamdonSelect == 3)
+        {
+            tipoElemento = ObjetoCarta.Elemento.Fuego;
+        }
+
+        Debug.Log("La IA esta llendo a " + tipoElemento);
+
+        modoIA = 0;
+  
+
+
+        if (modoIA == 0)  //En este modo no sacara al campo carta de su color main y las que este en el campo las pasara a la mano
+        {
+            Debug.Log("Pruebas a tope " + modoIA);
+            CartasArrayEnCampo = GameObject.FindGameObjectsWithTag("CartaCampoEn");
+
+            for (int i = 0; i < CartasArrayEnCampo.Length; i++)
+            {
+                Carta = CartasArrayEnCampo[i];
+                Debug.Log("Pruebas a tope1 " + Carta.name);
+                
+                if (Carta.GetComponent<ObjetoCarta>().tipoElemento == tipoElemento)
+                {
+                    Carta.transform.gameObject.tag = "CartasManoEn";
+                    Instantiate(Carta, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("ManoEnemigo").transform);
+                    DestroyImmediate(Carta);
+                }
+                time = UnityEngine.Random.Range(300, 1300);
+                await TimeForAIAsync(time);
+            }
+
+            CartasArrayEnMano = GameObject.FindGameObjectsWithTag("CartasManoEn");
+
+            for (int i = 0; i < CartasArrayEnMano.Length; i++)
+            {
+                CartasArrayEnCampo = GameObject.FindGameObjectsWithTag("CartaCampoEn");
+                Carta = CartasArrayEnMano[i];
+                Debug.Log("Pruebas a tope3: " + Carta.name + " de tipo " + Carta.GetComponent<ObjetoCarta>().getElemento() + " sale al campo por que es diferente a " + tipoElemento);
+
+                if (Carta.GetComponent<ObjetoCarta>().tipoElemento != tipoElemento && CartasArrayEnCampo.Length < maximaCartasCampo)
+                {
+
+                    Carta.transform.gameObject.tag = "CartaCampoEn";
+                    Instantiate(Carta, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("CampoEnemigo").transform);
+                    DestroyImmediate(Carta);
+                }
+                time = UnityEngine.Random.Range(300, 1300);
+                await TimeForAIAsync(time);
+            }
+
+        }
+        else
+        {
+            Debug.Log("Pruebas a tope " + modoIA);
+            CartasArrayEnCampo = GameObject.FindGameObjectsWithTag("CartaCampoEn");
+
+            for (int i = 0; i < CartasArrayEnCampo.Length; i++)
+            {
+                Carta = CartasArrayEnCampo[i];
+                Debug.Log("Pruebas a tope1 " + Carta.name);
+
+                if (Carta.GetComponent<ObjetoCarta>().tipoElemento != tipoElemento)
+                {
+                    Carta.transform.gameObject.tag = "CartasManoEn";
+                    Instantiate(Carta, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("ManoEnemigo").transform);
+                    DestroyImmediate(Carta);
+                }
+                time = UnityEngine.Random.Range(300, 1300);
+                await TimeForAIAsync(time);
+            }
+
+            CartasArrayEnMano = GameObject.FindGameObjectsWithTag("CartasManoEn");
+
+            for (int i = 0; i < CartasArrayEnMano.Length; i++)
+            {
+                CartasArrayEnCampo = GameObject.FindGameObjectsWithTag("CartaCampoEn");
+                Carta = CartasArrayEnMano[i];
+                Debug.Log("Pruebas a tope3: " + Carta.name + " de tipo " + Carta.GetComponent<ObjetoCarta>().getElemento() + " sale al campo por que es diferente a " + tipoElemento);
+
+                if (Carta.GetComponent<ObjetoCarta>().tipoElemento == tipoElemento && CartasArrayEnCampo.Length < 3)
+                {
+                    Debug.Log("COMETAMEPLIS: " + CartasArrayEnCampo.Length + " < 3");
+                    Carta.transform.gameObject.tag = "CartaCampoEn";
+                    Instantiate(Carta, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("CampoEnemigo").transform);
+                    DestroyImmediate(Carta);
+                }
+                time = UnityEngine.Random.Range(300, 1300);
+                await TimeForAIAsync(time);
+            }
+
+        }
+
+
+  
+
+        //La IA elije un color al principio del combate, por ahora aleatorio y se centra en el
+        // Para esto necesito tener la capacidad de detectar todas las cartas de la mano y del campo con sus respectivos 
+        //colores para decidir cuales sacar y cuales guardar
+
+        // En el modo conservador, saca carta que no sean del color elejido, para ahorar las cartas de su color
+
+        // En el modo agresivo, saca todas las cartas que puede de su color elejido para hacer un ataque fuerte
+
+
+
+    }
+
+    async void TurnBatle()//Lucha
+    {
+
+        List<GameObject> CartasIA = new List<GameObject>();
+        List<GameObject> CartasJugador = new List<GameObject>();
+
+        GameObject CartaIASelect = null;
+        GameObject CartaJugadorSelect = null;
+
+        int ataquesCompletados = 0;
+        string[] tipoDeSituacion = {"FreeKill","Ablandar","Intercambio","Sacrificio","Cabeza"};
+        int x = 0;
+
+        int y = 0;
+        do
+        {
+         
+            CartasIA.Clear();
+            CartasJugador.Clear();
+            situacionCompatible = false;
+            CartasArray = GameObject.FindGameObjectsWithTag("CartaCampoEn"); // Encuentra todas las cartas en mano de la IA
+
+            for (int i = 0; i < CartasArray.Length; i++) //Se mete todas las cartas activas en el ArrayList CartasIA
             {
 
-               
-                CartasMano = GameObject.FindGameObjectsWithTag("CartasManoEn");
-                var selecciondeCarta = Random.Range(0, GameObject.FindGameObjectsWithTag("CartasManoEn").Length);
-                Carta = CartasMano[selecciondeCarta];
-                Carta.transform.gameObject.tag = "CartaCampoEn";
-                Instantiate(Carta, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("CampoEnemigo").transform);
-                DestroyImmediate(Carta);
-
+                if (CartasArray[i].GetComponent<ObjetoCarta>().getActiva())//Si la carta esta activa, se mete en el array 
+                {
+                    CartasIA.Add(CartasArray[i]);
+                }
             }
-            n++;
-            await TimeForAIAsync();
-        } while (n < ramd);
 
 
+            CartasArray = GameObject.FindGameObjectsWithTag("CartaCampo"); // Encuentra todas las cartas en mano del Jugador
+            for (int i = 0; i < CartasArray.Length; i++) //Se mete todas las cartas activas en el ArrayList CartasIA
+            {
+                CartasJugador.Add(CartasArray[i]);
+            }
+
+            for (int i = 0; i < CartasIA.Count; i++)//recorre todas las cartas del jugador
+            {
+              //  Debug.Log("HOLAAAAA AQUI SE LIMPIAN LOS LIST 3// CartaIASelect: " + i + " // " + CartasIA.Count);
+                for (int j = 0; j < CartasJugador.Count; j++)//recorre todas las cartas IA
+                {
+                    //Aqui se cojen dos cartas y se comprueba si la tipoDeSituacion se da
+                    Debug.Log("HOLAAAAA AQUI SE LIMPIAN LOS LIST 4// CartaJugadorSelect: " + j + " // " + CartasJugador.Count);
+                    situacionCompatible = situacionDeCombate(CartasIA, CartasJugador,i ,j, tipoDeSituacion[x]); //true si atacara false si no
+
+
+                    if (situacionCompatible == true) //si es true ataca y reinicia el ciclo
+                    {
+                        if (x != 4)
+                        {
+                           // Debug.Log("HOLAAAAA AQUI SE LIMPIAN LOS LIST 5// " + CartasJugador[j].name);
+                          combate(CartasIA[i], CartasJugador[j]);
+                            await TimeForAIAsync(2000);
+
+                        }
+                        else
+                        {
+                            Debug.Log("La Vida del jugador es: " + Jugador.GetComponent<ObjetoJugador>().getVida());
+                            Jugador.GetComponent<ObjetoJugador>().perderVida(CartasIA[i].GetComponent<ObjetoCarta>().getAtaque());
+                            CartasIA[i].GetComponent<ObjetoCarta>().setActiva(false);
+                            Debug.Log("La Vida del jugador es ahora: " + Jugador.GetComponent<ObjetoJugador>().getVida());
+                        }
+
+
+                        break;
+                    }
+                    else
+                    {
+                        
+                    }
+
+
+                }
+                if (situacionCompatible == true)
+                {
+                    if (x < 2)
+                    {
+                        x = 0;
+                    }
+
+                    break;
+
+                }
+
+                //aqui atacan a cabeza
+                if (x == 4)
+                {
+                    Debug.Log("La Vida del jugador es: " + Jugador.GetComponent<ObjetoJugador>().getVida());
+                    Jugador.GetComponent<ObjetoJugador>().perderVida(CartasIA[i].GetComponent<ObjetoCarta>().getAtaque());
+                    CartasIA[i].GetComponent<ObjetoCarta>().setActiva(false);
+                    Debug.Log("La Vida del jugador es ahora: " + Jugador.GetComponent<ObjetoJugador>().getVida());
+
+                }
+            }
+
+            if (situacionCompatible == false)
+            {
+                x++;
+            }
+         //   Debug.Log("CartasCompletadas: " + ataquesCompletados);
+         //   Debug.Log("CartasContadas: " + CartasIA.Count);
+            y++;
+        } while (y != 10);
+
+        state = BattleState.PLAYERTURN;
+        PlayerTurn();
+        Debug.Log("Fin del turno del enemigo");
 
     }
 
-    void TurnBatle()//Lucha
+    private bool situacionDeCombate(List<GameObject> CartasIA, List<GameObject> CartasJugador,int IA, int Jugador, string tipoDeSituacion)
     {
-        //seleccionar la primera carta del otro campo
+        bool situacionCompatible = false;
 
-        bool cartaEnemigaSelect = false;
-    
-        CartasMano = GameObject.FindGameObjectsWithTag("CartaCampo");
-        if (CartasMano.Length != 0)
+        if (tipoDeSituacion.Equals("FreeKill")) //Se busca que la carta de la IA mate a la carta del Jugador sin que la suya muera
         {
-            CartaEnemiga = CartasMano[0];
-            cartaEnemigaSelect = true;
-      
+            if (CartasIA[IA].GetComponent<ObjetoCarta>().getAtaque() >= CartasJugador[Jugador].GetComponent<ObjetoCarta>().getVida() && CartasIA[IA].GetComponent<ObjetoCarta>().getVida() > CartasJugador[Jugador].GetComponent<ObjetoCarta>().getAtaque())
+            {
+                situacionCompatible = true;
+            }
+
         }
-       
-        //Selecciona la primera carta de su campo
-        CartasMano = GameObject.FindGameObjectsWithTag("CartaCampoEn");
-        Carta = CartasMano[0];
-        //combate
-        if (cartaEnemigaSelect)
+
+        if (tipoDeSituacion.Equals("Ablandar")) //Se busca que la carta de la IA dañe la carta del Jugador sin que la suya muera
         {
-            Debug.Log("Inicia el combate:");
-            Debug.Log("La carta de la IA tiene " + Carta.GetComponent<ObjetoCarta>().getAtaque() + " de daño");
-            Debug.Log("Tu carta tiene " + CartaEnemiga.GetComponent<ObjetoCarta>().getVida() + " de vida");
-            CartaEnemiga.GetComponent<ObjetoCarta>().perderVida(Carta.GetComponent<ObjetoCarta>().getAtaque());
-            Debug.Log("Despues del combate tu carta tiene  " + CartaEnemiga.GetComponent<ObjetoCarta>().getVida() + " de vida");
+            if (CartasIA[IA].GetComponent<ObjetoCarta>().getAtaque() < CartasJugador[Jugador].GetComponent<ObjetoCarta>().getVida() && CartasIA[IA].GetComponent<ObjetoCarta>().getVida() > CartasJugador[Jugador].GetComponent<ObjetoCarta>().getAtaque())
+            {
+                situacionCompatible = true;
+            }
 
-            Carta.GetComponent<ObjetoCarta>().perderVida(CartaEnemiga.GetComponent<ObjetoCarta>().getAtaque());
         }
-      
 
+        if (tipoDeSituacion.Equals("Intercambio")) //Se busca que la carta de la IA mate la carta del Jugador muriendo las dos
+        {
+            if (CartasIA[IA].GetComponent<ObjetoCarta>().getAtaque() >= CartasJugador[Jugador].GetComponent<ObjetoCarta>().getVida() && CartasIA[IA].GetComponent<ObjetoCarta>().getVida() <= CartasJugador[Jugador].GetComponent<ObjetoCarta>().getAtaque())
+            {
+                int decisionAleatoria = UnityEngine.Random.Range(1, 3); //Por ahora esta decision es aleatoria en un 50%
+                Debug.Log("La IA decid:  " + decisionAleatoria);
 
+                if (decisionAleatoria == 1)
+                {
+                    situacionCompatible = true;
+                }
+                
+            }
 
+        }
 
+        //sacrificio
+        if (tipoDeSituacion.Equals("Sacrificio")) // La carta que no tienen otras opciones atacan a cabeza
+        {
 
+           // situacionCompatible = true;
+        }
+
+        if (tipoDeSituacion.Equals("Cabeza")) // La carta que no tienen otras opciones atacan a cabeza
+        {
+            situacionCompatible = true;
+        }
+
+        return situacionCompatible; 
     }
 
-    void TimeForAI()
+    int calcularAtaqueTotalJugador(List<GameObject> CartasIA)
     {
-        //  int time = Random.Range(500, 1500);
-        Thread.Sleep(1000);
+        int ataqueTotal = 0;
+
+        for (int i = 0; i < CartasIA.Count; i++)//recorre todas las cartas de la IA para sumar el ataque total
+        {
+            ataqueTotal =  CartasIA[i].GetComponent<ObjetoCarta>().getAtaque();
+        }
+
+            return ataqueTotal;
+    }
+    int calcularAtaqueTotalIA(List<GameObject> CArtasJugador)
+    {
+        int ataqueTotal = 0;
+
+        for (int i = 0; i < CArtasJugador.Count; i++)//recorre todas las cartas de la IA para sumar el ataque total
+        {
+            ataqueTotal = CArtasJugador[i].GetComponent<ObjetoCarta>().getAtaque();
+        }
+
+        return ataqueTotal;
+    }
+
+    async void combate(GameObject CartaIASelect, GameObject CartaJugadorSelect) //Se le pasan dos cartas 
+    {
+        CartaJugadorSelect.GetComponent<ObjetoCarta>().perderVida(CartaIASelect.GetComponent<ObjetoCarta>().getAtaque());//Se actualiza la vida de las cartas
+        CartaIASelect.GetComponent<ObjetoCarta>().perderVida(CartaJugadorSelect.GetComponent<ObjetoCarta>().getAtaque());//Se actualiza la vida de las cartas
+
+        time = 1000;
+            await TimeForAIAsync(time); //Tiempo de observacion y animacion;
+
+        //Si alguna de las cartas muere, se eliminan del campo
+            if (CartaJugadorSelect.GetComponent<ObjetoCarta>().getVida() <= 0) 
+            {
+
+                DestroyImmediate(CartaJugadorSelect);
+            }
+
+            if (CartaIASelect.GetComponent<ObjetoCarta>().getVida() <= 0)
+            {
+                DestroyImmediate(CartaIASelect);
+            }
+            else
+            {
+            CartaIASelect.GetComponent<ObjetoCarta>().setActiva(false);
+            }
+
+    }
+
+    void TimeForAI(int tiempo)
+    {
+        Thread.Sleep(tiempo);
     }
 
 
-    async System.Threading.Tasks.Task<bool> TimeForAIAsync()
+    async System.Threading.Tasks.Task<bool> TimeForAIAsync(int tiempo)
     {
         bool bol = true;
         await System.Threading.Tasks.Task.Run(() =>
         {
-            TimeForAI();
+            TimeForAI(tiempo);
         }
         );
         return bol;

@@ -49,8 +49,8 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
         {
             this.transform.position = eventData.position;
 
-            if (placeholder.transform.parent != placeHolderParent)
-                placeholder.transform.SetParent(placeHolderParent);
+           // if (placeholder.transform.parent != placeHolderParent)
+             //   placeholder.transform.SetParent(placeHolderParent);
 
             int newSiblingIndex = placeHolderParent.childCount;
 

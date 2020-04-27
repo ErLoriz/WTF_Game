@@ -65,7 +65,7 @@ public class DropZone : MonoBehaviour, IDropHandler , IPointerEnterHandler , IPo
     {
         Debug.Log(eventData.pointerDrag.name + " was droppd on " + gameObject.name);
 
-        if (gameObject.name == ("Campo"))
+        if (GameObject.FindGameObjectWithTag("Campo").transform.childCount <= 7 && gameObject.name == ("Campo") && GameObject.FindGameObjectWithTag("Campo").GetComponent<DropZone>().tipoCarta == Draggable.Slot.CAMPO)
         {
             Draggable d = eventData.pointerDrag.GetComponent<Draggable>();
             if(d != null)
@@ -82,6 +82,23 @@ public class DropZone : MonoBehaviour, IDropHandler , IPointerEnterHandler , IPo
 
 
                 }
+
+            }
+
+        }
+        else if (GameObject.FindGameObjectWithTag("Mano").transform.childCount <= 7 && gameObject.name == ("Mano") && GameObject.FindGameObjectWithTag("Campo").GetComponent<DropZone>().tipoCarta == Draggable.Slot.CAMPO
+            || this.tag == "CartaTienda" && GameObject.FindGameObjectWithTag("Campo").GetComponent<DropZone>().tipoCarta == Draggable.Slot.CAMPO )
+        
+        {
+
+            Draggable d = eventData.pointerDrag.GetComponent<Draggable>();
+            if (d != null)
+            {
+                d.parentToReturnTo = this.transform;
+
+                await ChangeTipeAsync();
+
+                d.tipoCarta = Draggable.Slot.MANO;
 
             }
         }

@@ -17,6 +17,12 @@ TagManager:
   - CartaCampoEn
   - CampoEnemigo
   - CartaCampo
+  - Jugador
+  - IA
+  - ManoEnemigo
+  - Campo
+  - CartaTienda
+  - Mano
   layers:
   - Default
   - TransparentFX

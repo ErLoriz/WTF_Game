@@ -19,6 +19,9 @@ public class TiendaCartas : MonoBehaviour
 
     public Transform Panel_Cartas;
 
+    public Draggable.Slot tipoCarta;
+
+
     void Start()
     {
 
@@ -29,10 +32,14 @@ public class TiendaCartas : MonoBehaviour
     void nuevasCartas()
     {
 
-        Carta0 = Resources.Load("Carta0") as GameObject;
-        Carta1 = Resources.Load("Carta1") as GameObject;
-        Carta2 = Resources.Load("Carta2") as GameObject;
-        Carta3 = Resources.Load("Carta3") as GameObject;
+        Carta0 = Resources.Load("Angel") as GameObject;
+        Carta0.transform.gameObject.tag = "CartaTienda";
+        Carta1 = Resources.Load("DemonioRojo") as GameObject;
+        Carta1.transform.gameObject.tag = "CartaTienda";
+        Carta2 = Resources.Load("Segador") as GameObject;
+        Carta2.transform.gameObject.tag = "CartaTienda";
+        Carta3 = Resources.Load("VampiroAgua") as GameObject;
+        Carta3.transform.gameObject.tag = "CartaTienda";
 
         var primera = Random.Range(1, 5);
         var segunda = Random.Range(1, 5);
@@ -45,7 +52,7 @@ public class TiendaCartas : MonoBehaviour
             DestroyImmediate(CartaPanel2);
             DestroyImmediate(CartaPanel3);
             DestroyImmediate(CartaPanel4);
-        
+
             switch (primera)
             {
                 case 1:
@@ -109,7 +116,8 @@ public class TiendaCartas : MonoBehaviour
                     CartaPanel4 = Instantiate(Carta3, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas4").transform);
                     break;
             }
-        } else if(CartaPanel1 == null)
+        }
+        else if (CartaPanel1 == null)
         {
             switch (primera)
             {
@@ -177,18 +185,139 @@ public class TiendaCartas : MonoBehaviour
         }
     }
 
-    void cartasAMano(PointerEventData eventData)
+
+    private void Update()
     {
 
+        if (GameObject.FindGameObjectWithTag("PanelCartas1").transform.childCount == 0)
+        {
+            Carta0 = Resources.Load("Angel") as GameObject;
+            Carta0.transform.gameObject.tag = "CartaTienda";
+            Carta1 = Resources.Load("DemonioRojo") as GameObject;
+            Carta1.transform.gameObject.tag = "CartaTienda";
+            Carta2 = Resources.Load("Segador") as GameObject;
+            Carta2.transform.gameObject.tag = "CartaTienda";
+            Carta3 = Resources.Load("VampiroAgua") as GameObject;
+            Carta3.transform.gameObject.tag = "CartaTienda";
+
+            var primera = Random.Range(1, 5);
+
+            switch (primera)
+            {
+                case 1:
+                    CartaPanel1 = Instantiate(Carta0, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas1").transform);
+                    break;
+                case 2:
+                    CartaPanel1 = Instantiate(Carta1, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas1").transform);
+                    break;
+                case 3:
+                    CartaPanel1 = Instantiate(Carta2, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas1").transform);
+                    break;
+                case 4:
+                    CartaPanel1 = Instantiate(Carta3, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas1").transform);
+                    break;
+            }
+        }
 
 
+        else if (GameObject.FindGameObjectWithTag("PanelCartas2").transform.childCount == 0)
+        {
+            Carta0 = Resources.Load("Angel") as GameObject;
+            Carta0.transform.gameObject.tag = "CartaTienda";
+            Carta1 = Resources.Load("DemonioRojo") as GameObject;
+            Carta1.transform.gameObject.tag = "CartaTienda";
+            Carta2 = Resources.Load("Segador") as GameObject;
+            Carta2.transform.gameObject.tag = "CartaTienda";
+            Carta3 = Resources.Load("VampiroAgua") as GameObject;
+            Carta3.transform.gameObject.tag = "CartaTienda";
+
+            var segunda = Random.Range(1, 5);
+
+            switch (segunda)
+            {
+                case 1:
+                    CartaPanel2 = Instantiate(Carta0, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas2").transform);
+                    break;
+                case 2:
+                    CartaPanel2 = Instantiate(Carta1, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas2").transform);
+                    break;
+                case 3:
+                    CartaPanel2 = Instantiate(Carta2, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas2").transform);
+                    break;
+                case 4:
+                    CartaPanel2 = Instantiate(Carta3, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas2").transform);
+                    break;
+            }
+        }
+
+        else if (GameObject.FindGameObjectWithTag("PanelCartas3").transform.childCount == 0)
+        {
+
+            Carta0 = Resources.Load("Angel") as GameObject;
+            Carta0.transform.gameObject.tag = "CartaTienda";
+            Carta1 = Resources.Load("DemonioRojo") as GameObject;
+            Carta1.transform.gameObject.tag = "CartaTienda";
+            Carta2 = Resources.Load("Segador") as GameObject;
+            Carta2.transform.gameObject.tag = "CartaTienda";
+            Carta3 = Resources.Load("VampiroAgua") as GameObject;
+            Carta3.transform.gameObject.tag = "CartaTienda";
+
+            var tercero = Random.Range(1, 5);
+
+            switch (tercero)
+            {
+                case 1:
+                    CartaPanel3 = Instantiate(Carta0, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas3").transform);
+                    break;
+                case 2:
+                    CartaPanel3 = Instantiate(Carta1, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas3").transform);
+                    break;
+                case 3:
+                    CartaPanel3 = Instantiate(Carta2, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas3").transform);
+                    break;
+                case 4:
+                    CartaPanel3 = Instantiate(Carta3, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas3").transform);
+                    break;
+            }
+        }
+
+        else if (GameObject.FindGameObjectWithTag("PanelCartas4").transform.childCount == 0)
+        {
+            Carta0 = Resources.Load("Angel") as GameObject;
+            Carta0.transform.gameObject.tag = "CartaTienda";
+            Carta1 = Resources.Load("DemonioRojo") as GameObject;
+            Carta1.transform.gameObject.tag = "CartaTienda";
+            Carta2 = Resources.Load("Segador") as GameObject;
+            Carta2.transform.gameObject.tag = "CartaTienda";
+            Carta3 = Resources.Load("VampiroAgua") as GameObject;
+            Carta3.transform.gameObject.tag = "CartaTienda";
+
+            var cuarto = Random.Range(1, 5);
+
+            switch (cuarto)
+            {
+                case 1:
+                    CartaPanel4 = Instantiate(Carta0, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas4").transform);
+                    break;
+                case 2:
+                    CartaPanel4 = Instantiate(Carta1, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas4").transform);
+                    break;
+                case 3:
+                    CartaPanel4 = Instantiate(Carta2, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas4").transform);
+                    break;
+                case 4:
+                    CartaPanel4 = Instantiate(Carta3, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas4").transform);
+                    break;
+            }
+        }
     }
-     
+
+
     void reroll()
-    { 
+    {
         nuevasCartas();
     }
-    
+
 }
 
 
