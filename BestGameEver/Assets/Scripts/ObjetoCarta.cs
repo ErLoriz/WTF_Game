@@ -8,7 +8,9 @@ public class ObjetoCarta : MonoBehaviour
  
     public int Ataque;
     public int Vida;
+    public int Coste;
     public bool Activa;
+    
 
     public enum Elemento {Aire, Agua, Tierra, Fuego};
     public Elemento tipoElemento;
@@ -32,6 +34,10 @@ public class ObjetoCarta : MonoBehaviour
     public int getVida()
     {
         return Vida;
+    }
+    public int getCoste()
+    {
+        return Coste;
     }
 
     public Elemento getElemento()

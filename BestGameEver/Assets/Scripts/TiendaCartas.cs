@@ -17,6 +17,11 @@ public class TiendaCartas : MonoBehaviour
     static GameObject CartaPanel3 = null;
     static GameObject CartaPanel4 = null;
 
+   // public Text coste1;
+   // public Text coste2;
+   // public Text coste3;
+    public Text coste4;
+
     public Transform Panel_Cartas;
 
     public Draggable.Slot tipoCarta;
@@ -168,20 +173,34 @@ public class TiendaCartas : MonoBehaviour
             }
 
             switch (cuarto)
-            {
+            {//esta wea se debe cambiar
+
                 case 1:
                     CartaPanel4 = Instantiate(Carta0, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas4").transform);
-                    break;
+               
+                    Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + Carta0.GetComponent<ObjetoCarta>().getCoste().ToString());
+                    Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + Carta0.GetComponent<ObjetoCarta>().getCoste().ToString());
+                     break;
                 case 2:
                     CartaPanel4 = Instantiate(Carta1, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas4").transform);
+       
+                    Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + Carta0.GetComponent<ObjetoCarta>().getCoste().ToString());
+                    Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + Carta0.GetComponent<ObjetoCarta>().getCoste().ToString());
                     break;
                 case 3:
                     CartaPanel4 = Instantiate(Carta2, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas4").transform);
+                 
+                    Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + Carta0.GetComponent<ObjetoCarta>().getCoste().ToString());
+                    Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + Carta0.GetComponent<ObjetoCarta>().getCoste().ToString());
                     break;
                 case 4:
                     CartaPanel4 = Instantiate(Carta3, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("PanelCartas4").transform);
+                
+                    Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + Carta0.GetComponent<ObjetoCarta>().getCoste().ToString());
+                    Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + Carta0.GetComponent<ObjetoCarta>().getCoste().ToString());
                     break;
             }
+
         }
     }
 

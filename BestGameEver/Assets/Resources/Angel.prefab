@@ -399,7 +399,7 @@ GameObject:
   - component: {fileID: 3201009857214990252}
   m_Layer: 5
   m_Name: Angel
-  m_TagString: CartaTienda
+  m_TagString: CartasManoEn
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -503,6 +503,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Ataque: 4
   Vida: 6
+  Coste: 5
   Activa: 0
   tipoElemento: 0
   tipoClase: 0

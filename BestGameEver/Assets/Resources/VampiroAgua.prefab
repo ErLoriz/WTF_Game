@@ -347,8 +347,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Ataque: 3
   Vida: 3
+  Coste: 3
   Activa: 0
-  tipoElemento: 0
+  tipoElemento: 1
   tipoClase: 0
   T_ataque: {fileID: 6085056107638405723}
   T_vida: {fileID: 6085056108713710595}
