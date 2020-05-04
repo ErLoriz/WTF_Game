@@ -4,7 +4,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class DropZone : MonoBehaviour, IDropHandler , IPointerEnterHandler , IPointerExitHandler
+public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
 
     public Draggable.Slot tipoCarta;
@@ -15,7 +15,7 @@ public class DropZone : MonoBehaviour, IDropHandler , IPointerEnterHandler , IPo
     public void OnPointerEnter(PointerEventData eventData)
     {
         //Debug.Log("OnPointerEnter");
-         
+
 
         if (eventData.pointerDrag == null)
             return;
@@ -29,9 +29,9 @@ public class DropZone : MonoBehaviour, IDropHandler , IPointerEnterHandler , IPo
                 if (tipoCarta != Draggable.Slot.MANO)
                 {
                     d.placeHolderParent = this.transform;
-                   
-                  
-                   
+
+
+
                 }
 
             }
@@ -46,7 +46,7 @@ public class DropZone : MonoBehaviour, IDropHandler , IPointerEnterHandler , IPo
 
         if (eventData.pointerDrag == null)
             return;
-            
+
 
 
         if (gameObject.name == ("Campo"))
@@ -69,7 +69,8 @@ public class DropZone : MonoBehaviour, IDropHandler , IPointerEnterHandler , IPo
     {
         Draggable d = eventData.pointerDrag.GetComponent<Draggable>();
 
-        if (GameObject.FindGameObjectWithTag("Campo").transform.childCount <= 7 && gameObject.name == ("Campo") && GameObject.FindGameObjectWithTag("Campo").GetComponent<DropZone>().tipoCarta == Draggable.Slot.CAMPO)
+        if (GameObject.FindGameObjectWithTag("Campo").transform.childCount <= 7 && gameObject.name == ("Campo") && GameObject.FindGameObjectWithTag("Campo").GetComponent<DropZone>().tipoCarta == Draggable.Slot.CAMPO
+            && d.tipoCarta == Draggable.Slot.MANO)
         {
 
             if (d != null)
@@ -82,7 +83,7 @@ public class DropZone : MonoBehaviour, IDropHandler , IPointerEnterHandler , IPo
 
                     d.tipoCarta = Draggable.Slot.CAMPO;
                     d.transform.gameObject.tag = "CartaCampo";
-                    Debug.Log("Nombre de la carta tirada al campo:.................... " + this.name);
+                    d.tipoCarta = Draggable.Slot.CARTA_ATAQUE;
 
 
                 }
@@ -111,7 +112,7 @@ public class DropZone : MonoBehaviour, IDropHandler , IPointerEnterHandler , IPo
 
             }
         }
-        else if (gameObject.name == ("CampoEnemigo"))
+        else if (gameObject.name == ("CampoEnemigo") && d.tipoCarta == Draggable.Slot.CARTA_ATAQUE)
         {
             double distancia = 39.3;
 
@@ -154,14 +155,25 @@ public class DropZone : MonoBehaviour, IDropHandler , IPointerEnterHandler , IPo
                 cartaPlayer.GetComponent<ObjetoCarta>().perderVida(cartaIA.GetComponent<ObjetoCarta>().getAtaque());//Se actualiza la vida de las cartas
                 cartaIA.GetComponent<ObjetoCarta>().perderVida(cartaPlayer.GetComponent<ObjetoCarta>().getAtaque());//Se actualiza la vida de las cartas
 
-              
+
 
                 //Si alguna de las cartas muere, se eliminan del campo
                 if (cartaPlayer.GetComponent<ObjetoCarta>().getVida() <= 0)
                 {
 
+                    Destroy(cartaPlayer.gameObject);
 
-                    DestroyImmediate(cartaPlayer);
+                    for (int i = 0; i < GameObject.FindGameObjectWithTag("Mano").transform.childCount; i++)
+                    {
+
+                        if (GameObject.FindGameObjectWithTag("Mano").transform.GetChild(i).name == "New Game Object")
+                        {
+                            Destroy(GameObject.FindGameObjectWithTag("Mano").transform.GetChild(i).gameObject);
+                            break;
+                        }
+
+                    }
+
                 }
 
                 if (cartaIA.GetComponent<ObjetoCarta>().getVida() <= 0)
@@ -181,14 +193,14 @@ public class DropZone : MonoBehaviour, IDropHandler , IPointerEnterHandler , IPo
         }
 
 
-        }
+    }
 
-        public void ChangeTipe()
+    public void ChangeTipe()
     {
 
         Thread.Sleep(1);
 
-        
+
     }
     async System.Threading.Tasks.Task<bool> ChangeTipeAsync()
     {

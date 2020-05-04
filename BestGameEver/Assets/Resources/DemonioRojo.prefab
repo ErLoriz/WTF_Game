@@ -165,7 +165,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parentToReturnTo: {fileID: 0}
   placeHolderParent: {fileID: 0}
-  tipoCarta: 0
+  tipoCarta: 3
 --- !u!225 &3706745232481032879
 CanvasGroup:
   m_ObjectHideFlags: 0

@@ -12,7 +12,7 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
     public Transform placeHolderParent = null;
     GameObject placeholder = null;
 
-    public enum Slot { MANO, CAMPO, CAMPO_OFF, MANO_ENEMIGO, CAMPO_ENEMIGO };
+    public enum Slot { MANO, CAMPO, CAMPO_OFF, MANO_ENEMIGO, CAMPO_ENEMIGO, CARTA_ATAQUE };
     public Slot tipoCarta;
 
     public void OnBeginDrag(PointerEventData eventData)

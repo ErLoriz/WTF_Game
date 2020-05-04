@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class ObjetoCarta : MonoBehaviour
 {
  
@@ -10,7 +11,8 @@ public class ObjetoCarta : MonoBehaviour
     public int Vida;
     public int Coste;
     public bool Activa;
-    
+
+
 
     public enum Elemento {Aire, Agua, Tierra, Fuego};
     public Elemento tipoElemento;
@@ -22,13 +24,17 @@ public class ObjetoCarta : MonoBehaviour
 
     void Start()
     {
+      
         T_ataque.text = Ataque.ToString();
         T_vida.text = Vida.ToString();
     }
 
     public int getAtaque()
     {
+   
+
         return Ataque;
+        
     }
 
     public int getVida()
@@ -37,6 +43,7 @@ public class ObjetoCarta : MonoBehaviour
     }
     public int getCoste()
     {
+      
         return Coste;
     }
 

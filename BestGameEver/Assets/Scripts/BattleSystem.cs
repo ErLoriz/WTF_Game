@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Threading;
 using System;
+using UnityEngine.Animations;
 
 public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST }
 
@@ -11,6 +12,8 @@ public class BattleSystem : MonoBehaviour
 {
 
     // Thread tt = new Thread(ThreadTiempo.ThreadTemp);
+
+
 
     public bool situacionCompatible;
     public int CartasManoCant;
@@ -47,6 +50,7 @@ public class BattleSystem : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         zone = GameObject.FindGameObjectWithTag("Campo").GetComponent<DropZone>();
         PlayersArray = GameObject.FindGameObjectsWithTag("Jugador");
         Jugador = PlayersArray[0];
@@ -98,6 +102,13 @@ public class BattleSystem : MonoBehaviour
         TextoTurno.text = "Tu turno";
         Jugador.GetComponent<ObjetoJugador>().ganarOro(5);
 
+        CartasArray = GameObject.FindGameObjectsWithTag("CartaCampoEn");
+
+        for (int i = 0; i < CartasArray.Length; i++)
+        {
+            CartasArray[i].GetComponent<ObjetoCarta>().setActiva(true);
+        }
+
     }
 
     public void OnClickButtonTurn()
@@ -111,6 +122,13 @@ public class BattleSystem : MonoBehaviour
 
     async void EnemyTurn()
     {
+        CartasArray = GameObject.FindGameObjectsWithTag("CartasManoEn");
+
+       // for (int i = 0; i < CartasArray.Length; i++)
+        //{
+         //   CartasArray[i].GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO_ENEMIGO;
+       // }
+
         zone.tipoCarta = Draggable.Slot.CAMPO_OFF;
         botonPasar.enabled = false;
         TextoTurno.text = "Enem.F1";
@@ -121,11 +139,15 @@ public class BattleSystem : MonoBehaviour
         time = UnityEngine.Random.Range(300, 1000);
         await TimeForAIAsync(time);
 
+     
+
         CartasArray = GameObject.FindGameObjectsWithTag("CartaCampoEn");
 
         for (int i = 0; i < CartasArray.Length; i++)
         {
+
             CartasArray[i].GetComponent<ObjetoCarta>().setActiva(true);
+         //   CartasArray[i].GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO_ENEMIGO;
         }
 
 
@@ -169,7 +191,7 @@ public class BattleSystem : MonoBehaviour
         }
 
         Debug.Log("Carta en tienda IA: " + CartaX.name);
-
+        CartaX.GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO_ENEMIGO;
 
         return CartaX;
     }
@@ -247,8 +269,8 @@ public class BattleSystem : MonoBehaviour
                 {
                     Carta.transform.gameObject.tag = "CartasManoEn";
                     Carta.transform.SetParent(GameObject.FindGameObjectWithTag("ManoEnemigo").transform);
-                   // Instantiate(Carta, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("ManoEnemigo").transform);
-                   // DestroyImmediate(Carta);
+                    // Instantiate(Carta, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("ManoEnemigo").transform);
+                    // DestroyImmediate(Carta);
                 }
                 time = UnityEngine.Random.Range(300, 1300);
                 await TimeForAIAsync(time);
@@ -267,7 +289,6 @@ public class BattleSystem : MonoBehaviour
 
                     Carta.transform.gameObject.tag = "CartaCampoEn";
                     Carta.transform.SetParent(GameObject.FindGameObjectWithTag("CampoEnemigo").transform);
-
                     //Instantiate(Carta, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("CampoEnemigo").transform);
                     //DestroyImmediate(Carta);
                 }
@@ -290,9 +311,8 @@ public class BattleSystem : MonoBehaviour
                 {
                     Carta.transform.gameObject.tag = "CartasManoEn";
                     Carta.transform.SetParent(GameObject.FindGameObjectWithTag("ManoEnemigo").transform);
-
-                 //   Instantiate(Carta, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("ManoEnemigo").transform);
-                   // DestroyImmediate(Carta);
+                    //   Instantiate(Carta, new Vector3(185, 165, 0), Quaternion.identity, GameObject.FindGameObjectWithTag("ManoEnemigo").transform);
+                    // DestroyImmediate(Carta);
                 }
                 time = UnityEngine.Random.Range(300, 1300);
                 await TimeForAIAsync(time);
