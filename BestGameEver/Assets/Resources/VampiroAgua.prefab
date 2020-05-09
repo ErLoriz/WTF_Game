@@ -347,7 +347,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Ataque: 3
   Vida: 3
-  Coste: 3
+  Coste: 1
   Activa: 0
   tipoElemento: 1
   tipoClase: 0

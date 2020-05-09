@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -12,15 +13,18 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
     public Transform placeHolderParent = null;
     GameObject placeholder = null;
 
+    public bool Open = false;
+
     public enum Slot { MANO, CAMPO, CAMPO_OFF, MANO_ENEMIGO, CAMPO_ENEMIGO, CARTA_ATAQUE };
     public Slot tipoCarta;
-
+    
     public void OnBeginDrag(PointerEventData eventData)
     {
-        
-        if (tipoCarta == Slot.MANO)
+       
+
+        if (tipoCarta == Slot.MANO || this.tipoCarta == Slot.CARTA_ATAQUE)
         {
-            Debug.Log("OnBeginDrag");
+
             placeholder = new GameObject();
             placeholder.transform.SetParent(this.transform.parent);
             LayoutElement le = placeholder.AddComponent<LayoutElement>();
@@ -34,24 +38,29 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
             parentToReturnTo = this.transform.parent;
             placeHolderParent = parentToReturnTo;
             this.transform.SetParent(this.transform.parent.parent);
-
+            
             GetComponent<CanvasGroup>().blocksRaycasts = false;
+
+            float num1 = (float) 332.5831;
+
+            
+            if(this.tag == "CartaMano" || this.tag == "CartaCampo")
+            {
+                GameObject.Find("VentaCartas").transform.position = new Vector3(GameObject.Find("HUDPanel").transform.position.x, GameObject.Find("HUDPanel").transform.position.y, GameObject.Find("HUDPanel").transform.position.z);
+                Text valor = GameObject.Find("OroVenta").GetComponent<Text>();
+                valor.text = Convert.ToString(this.GetComponent<ObjetoCarta>().getCoste());
+            }
 
         }
         
-        //DropZone[] zones = GameObject.FindObjectOfType<DropZone>();
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        //Debug.Log("OnDrag");
-        if (tipoCarta == Slot.MANO)
+        if (tipoCarta == Slot.MANO || this.tipoCarta == Slot.CARTA_ATAQUE)
         {
             this.transform.position = eventData.position;
-
-           // if (placeholder.transform.parent != placeHolderParent)
-             //   placeholder.transform.SetParent(placeHolderParent);
-
+            
             int newSiblingIndex = placeHolderParent.childCount;
 
             for (int i = 0; i < placeHolderParent.childCount; i++)
@@ -67,37 +76,26 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
                 }
                 placeholder.transform.SetSiblingIndex(newSiblingIndex);
             }
+
         }
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
 
-        if (tipoCarta == Slot.MANO)
+        if (tipoCarta == Slot.MANO || this.tipoCarta == Slot.CARTA_ATAQUE)
         {
-
-            //Debug.Log("OnEndDrag");
-           
+            
+               
             this.transform.SetParent(parentToReturnTo);
             this.transform.SetSiblingIndex(placeholder.transform.GetSiblingIndex());
             GetComponent<CanvasGroup>().blocksRaycasts = true;
-           // EventSystem.current.RaycastAll(eventData);
             Destroy(placeholder);
-
-           
-
-          //  DropZone d = eventData.pointerDrag.GetComponent<DropZone>();
-
-            Debug.Log("Nombre de gameobject........... " + gameObject.name);
-
-          //  if (gameObject.name == ("Campo"))
-           // {
-
-               
-           // }
-           
-            // d.tipoCarta = Draggable.Slot.CAMPO;
-
+            if (this.tag == "CartaMano" || this.tag == "CartaCampo")
+            {
+                GameObject.Find("VentaCartas").transform.position = new Vector3(-200, -200, 0);
+            }
+            
         }
     }
 

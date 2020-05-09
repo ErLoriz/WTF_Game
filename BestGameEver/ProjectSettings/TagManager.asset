@@ -5,10 +5,6 @@ TagManager:
   serializedVersion: 2
   tags:
   - PanelCartas
-  - Carta0
-  - Carta1
-  - Carta2
-  - Carta3
   - PanelCartas1
   - PanelCartas2
   - PanelCartas3
@@ -23,6 +19,9 @@ TagManager:
   - Campo
   - CartaTienda
   - Mano
+  - CartaMano
+  - Tienda
+  - VentaCartas
   layers:
   - Default
   - TransparentFX

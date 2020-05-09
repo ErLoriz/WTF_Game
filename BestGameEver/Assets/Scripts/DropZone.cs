@@ -14,8 +14,6 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        //Debug.Log("OnPointerEnter");
-
 
         if (eventData.pointerDrag == null)
             return;
@@ -30,8 +28,6 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
                 {
                     d.placeHolderParent = this.transform;
 
-
-
                 }
 
             }
@@ -42,7 +38,6 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        //Debug.Log("OnPointerExit");
 
         if (eventData.pointerDrag == null)
             return;
@@ -69,8 +64,53 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     {
         Draggable d = eventData.pointerDrag.GetComponent<Draggable>();
 
-        if (GameObject.FindGameObjectWithTag("Campo").transform.childCount <= 7 && gameObject.name == ("Campo") && GameObject.FindGameObjectWithTag("Campo").GetComponent<DropZone>().tipoCarta == Draggable.Slot.CAMPO
-            && d.tipoCarta == Draggable.Slot.MANO)
+        double distanciaLados = 184.665;
+        double distanciaAltura = 17.873;
+
+        float n1 = d.transform.position.x;
+        float n2 = GameObject.Find("HUDPanel").transform.position.x;
+
+        float num3 = d.transform.position.y;
+        float num4 = GameObject.Find("HUDPanel").transform.position.y;
+
+        float arriba = 0;
+        float abajo = 0;
+
+        float izq = 0;
+        float der = 0;
+        
+        izq = n2 - (float)distanciaLados;
+        der = n2 + (float)distanciaLados;
+
+        abajo = num4 - (float)distanciaAltura;
+        arriba = num4 + (float)distanciaAltura;
+
+        if (GameObject.FindGameObjectWithTag("Mano").transform.childCount <= 7 && gameObject.name == ("Mano") && GameObject.FindGameObjectWithTag("Campo").GetComponent<DropZone>().tipoCarta == Draggable.Slot.CAMPO
+            || this.tag == "CartaTienda" && GameObject.FindGameObjectWithTag("Campo").GetComponent<DropZone>().tipoCarta == Draggable.Slot.CAMPO 
+            || d.tipoCarta == Draggable.Slot.CARTA_ATAQUE && gameObject.name == "Mano")
+
+        {
+
+            if (Jugador.GetComponent<ObjetoJugador>().getOro() >= d.GetComponent<ObjetoCarta>().getCoste() && d.tipoCarta == Draggable.Slot.MANO && d.tag == "CartaTienda") // bt.Jugador.GetComponent<ObjetoJugador>().getOro() >= d.GetComponent<ObjetoCarta>().getCoste()
+            {
+
+                Jugador.GetComponent<ObjetoJugador>().perderOro(d.GetComponent<ObjetoCarta>().getCoste());
+                d.transform.gameObject.tag = "CartaMano";
+                d.parentToReturnTo = this.transform;
+                await ChangeTipeAsync();
+                d.tipoCarta = Draggable.Slot.MANO;
+
+            } else if(d.tipoCarta == Draggable.Slot.CARTA_ATAQUE)
+            {
+                d.parentToReturnTo = this.transform;
+                d.transform.gameObject.tag = "CartaMano";
+                await ChangeTipeAsync();
+
+                d.tipoCarta = Draggable.Slot.MANO;
+            }
+        }
+        else if (GameObject.FindGameObjectWithTag("Campo").transform.childCount <= 7 && gameObject.name == ("Campo") && GameObject.FindGameObjectWithTag("Campo").GetComponent<DropZone>().tipoCarta == Draggable.Slot.CAMPO
+            && d.tipoCarta == Draggable.Slot.MANO && d.tag == "CartaMano")
         {
 
             if (d != null)
@@ -90,27 +130,11 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 
             }
 
-        }
-        else if (GameObject.FindGameObjectWithTag("Mano").transform.childCount <= 7 && gameObject.name == ("Mano") && GameObject.FindGameObjectWithTag("Campo").GetComponent<DropZone>().tipoCarta == Draggable.Slot.CAMPO
-            || this.tag == "CartaTienda" && GameObject.FindGameObjectWithTag("Campo").GetComponent<DropZone>().tipoCarta == Draggable.Slot.CAMPO)
-
+        } else if (gameObject.name == ("VentaCartas"))
         {
-
-            if (d != null && Jugador.GetComponent<ObjetoJugador>().getOro() >= d.GetComponent<ObjetoCarta>().getCoste()) // bt.Jugador.GetComponent<ObjetoJugador>().getOro() >= d.GetComponent<ObjetoCarta>().getCoste()
-            {
-
-
-                int federico = d.GetComponent<ObjetoCarta>().getCoste();
-                Jugador.GetComponent<ObjetoJugador>().getOro();
-                Jugador.GetComponent<ObjetoJugador>().perderOro(d.GetComponent<ObjetoCarta>().getCoste());
-
-                d.parentToReturnTo = this.transform;
-
-                await ChangeTipeAsync();
-
-                d.tipoCarta = Draggable.Slot.MANO;
-
-            }
+            Jugador.GetComponent<ObjetoJugador>().ganarOro(d.GetComponent<ObjetoCarta>().getCoste());
+            await ChangeTipeAsync();
+            Destroy(d.gameObject);
         }
         else if (gameObject.name == ("CampoEnemigo") && d.tipoCarta == Draggable.Slot.CARTA_ATAQUE)
         {
@@ -123,12 +147,11 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 
             float left = 0;
             float right = 0;
-
+            
             for (int i = 0; i < gameObject.transform.childCount; i++)
             {
 
                 num2 = gameObject.transform.GetChild(i).position.x;
-
                 left = num2 - (float)distancia;
                 right = num2 + (float)distancia;
 
@@ -160,19 +183,8 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
                 //Si alguna de las cartas muere, se eliminan del campo
                 if (cartaPlayer.GetComponent<ObjetoCarta>().getVida() <= 0)
                 {
-
+                    await ChangeTipeAsync();
                     Destroy(cartaPlayer.gameObject);
-
-                    for (int i = 0; i < GameObject.FindGameObjectWithTag("Mano").transform.childCount; i++)
-                    {
-
-                        if (GameObject.FindGameObjectWithTag("Mano").transform.GetChild(i).name == "New Game Object")
-                        {
-                            Destroy(GameObject.FindGameObjectWithTag("Mano").transform.GetChild(i).gameObject);
-                            break;
-                        }
-
-                    }
 
                 }
 

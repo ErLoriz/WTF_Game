@@ -165,7 +165,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parentToReturnTo: {fileID: 0}
   placeHolderParent: {fileID: 0}
-  tipoCarta: 3
+  Open: 0
+  tipoCarta: 0
 --- !u!225 &3706745232481032879
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -192,7 +193,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Ataque: 5
   Vida: 3
-  Coste: 3
+  Coste: 1
   Activa: 0
   tipoElemento: 3
   tipoClase: 0

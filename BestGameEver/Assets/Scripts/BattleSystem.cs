@@ -32,6 +32,8 @@ public class BattleSystem : MonoBehaviour
     public BattleState state;
 
     int time = 0;
+
+    public int turnCounter = 0;
     
     public ObjetoCarta.Elemento tipoElemento;
 
@@ -50,7 +52,6 @@ public class BattleSystem : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
         zone = GameObject.FindGameObjectWithTag("Campo").GetComponent<DropZone>();
         PlayersArray = GameObject.FindGameObjectsWithTag("Jugador");
         Jugador = PlayersArray[0];
@@ -97,6 +98,17 @@ public class BattleSystem : MonoBehaviour
 
     public void PlayerTurn()
     {
+        OpenPanel_Cartas panel = GameObject.Find("ButtonCartas").GetComponent<OpenPanel_Cartas>();
+        panel.forceOpen();
+
+        TiendaCartas tienda = GameObject.Find("ButtonReroll").GetComponent<TiendaCartas>();
+
+        if (GameObject.FindGameObjectWithTag("Tienda").activeInHierarchy)
+            tienda.rerollTurno();
+
+        turnCounter++;
+
+        GameObject.FindGameObjectWithTag("Mano").GetComponent<DropZone>().tipoCarta = Draggable.Slot.MANO;
         zone.tipoCarta = Draggable.Slot.CAMPO;
         botonPasar.enabled = true;
         TextoTurno.text = "Tu turno";
@@ -122,12 +134,11 @@ public class BattleSystem : MonoBehaviour
 
     async void EnemyTurn()
     {
+        //turnCounter++;
+
         CartasArray = GameObject.FindGameObjectsWithTag("CartasManoEn");
 
-       // for (int i = 0; i < CartasArray.Length; i++)
-        //{
-         //   CartasArray[i].GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO_ENEMIGO;
-       // }
+        GameObject.FindGameObjectWithTag("Mano").GetComponent<DropZone>().tipoCarta = Draggable.Slot.CAMPO_OFF;
 
         zone.tipoCarta = Draggable.Slot.CAMPO_OFF;
         botonPasar.enabled = false;
@@ -461,6 +472,9 @@ public class BattleSystem : MonoBehaviour
             y++;
         } while (y != 10);
 
+        OpenPanel_Cartas panel = GameObject.Find("ButtonCartas").GetComponent<OpenPanel_Cartas>();
+        panel.forceClose();
+
         state = BattleState.PLAYERTURN;
         PlayerTurn();
         Debug.Log("Fin del turno del enemigo");
@@ -584,6 +598,11 @@ public class BattleSystem : MonoBehaviour
         }
         );
         return bol;
+    }
+
+    public int turno()
+    {
+        return turnCounter;
     }
 
 }
