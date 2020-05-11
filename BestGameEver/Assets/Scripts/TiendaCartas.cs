@@ -17,6 +17,8 @@ public class TiendaCartas : MonoBehaviour
     static GameObject CartaPanel3 = null;
     static GameObject CartaPanel4 = null;
 
+    public static GameObject Jugador;
+
     BattleSystem battleSystem;
 
     private static int turn;
@@ -198,16 +200,22 @@ public class TiendaCartas : MonoBehaviour
     public void reroll()
     {
 
-        if (GameObject.FindGameObjectWithTag("PanelCartas1").transform.childCount == 0) { CartaPanel1 = new GameObject(); }
+        if (GameObject.Find("Jugador").GetComponent<ObjetoJugador>().getOro() >= 2)
+        {
+            GameObject.Find("Jugador").GetComponent<ObjetoJugador>().perderOro(2);
+
+            if (GameObject.FindGameObjectWithTag("PanelCartas1").transform.childCount == 0) { CartaPanel1 = new GameObject(); }
            
-        if (GameObject.FindGameObjectWithTag("PanelCartas2").transform.childCount == 0) { CartaPanel2 = new GameObject(); }
+            if (GameObject.FindGameObjectWithTag("PanelCartas2").transform.childCount == 0) { CartaPanel2 = new GameObject(); }
 
-        if (GameObject.FindGameObjectWithTag("PanelCartas3").transform.childCount == 0) { CartaPanel3 = new GameObject(); }
+            if (GameObject.FindGameObjectWithTag("PanelCartas3").transform.childCount == 0) { CartaPanel3 = new GameObject(); }
 
-        if (GameObject.FindGameObjectWithTag("PanelCartas4").transform.childCount == 0) { CartaPanel4 = new GameObject(); }
+            if (GameObject.FindGameObjectWithTag("PanelCartas4").transform.childCount == 0) { CartaPanel4 = new GameObject(); }
             
 
-        nuevasCartas();
+            nuevasCartas();
+        }
+        
     }
 
     public void rerollTurno()

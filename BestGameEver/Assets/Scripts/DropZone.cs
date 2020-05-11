@@ -11,6 +11,7 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 
     public BattleSystem bt = new BattleSystem();
     public static GameObject Jugador;
+    public BattleSystem battle;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -64,144 +65,178 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     {
         Draggable d = eventData.pointerDrag.GetComponent<Draggable>();
 
-        double distanciaLados = 184.665;
-        double distanciaAltura = 17.873;
-
-        float n1 = d.transform.position.x;
-        float n2 = GameObject.Find("HUDPanel").transform.position.x;
-
-        float num3 = d.transform.position.y;
-        float num4 = GameObject.Find("HUDPanel").transform.position.y;
-
-        float arriba = 0;
-        float abajo = 0;
-
-        float izq = 0;
-        float der = 0;
-        
-        izq = n2 - (float)distanciaLados;
-        der = n2 + (float)distanciaLados;
-
-        abajo = num4 - (float)distanciaAltura;
-        arriba = num4 + (float)distanciaAltura;
-
-        if (GameObject.FindGameObjectWithTag("Mano").transform.childCount <= 7 && gameObject.name == ("Mano") && GameObject.FindGameObjectWithTag("Campo").GetComponent<DropZone>().tipoCarta == Draggable.Slot.CAMPO
-            || this.tag == "CartaTienda" && GameObject.FindGameObjectWithTag("Campo").GetComponent<DropZone>().tipoCarta == Draggable.Slot.CAMPO 
-            || d.tipoCarta == Draggable.Slot.CARTA_ATAQUE && gameObject.name == "Mano")
-
+        switch (GameObject.Find("BattleSystem").GetComponent<BattleSystem>().state)
         {
 
-            if (Jugador.GetComponent<ObjetoJugador>().getOro() >= d.GetComponent<ObjetoCarta>().getCoste() && d.tipoCarta == Draggable.Slot.MANO && d.tag == "CartaTienda") // bt.Jugador.GetComponent<ObjetoJugador>().getOro() >= d.GetComponent<ObjetoCarta>().getCoste()
-            {
+        case BattleState.PLAYERTURN:
 
-                Jugador.GetComponent<ObjetoJugador>().perderOro(d.GetComponent<ObjetoCarta>().getCoste());
-                d.transform.gameObject.tag = "CartaMano";
-                d.parentToReturnTo = this.transform;
-                await ChangeTipeAsync();
-                d.tipoCarta = Draggable.Slot.MANO;
-
-            } else if(d.tipoCarta == Draggable.Slot.CARTA_ATAQUE)
-            {
-                d.parentToReturnTo = this.transform;
-                d.transform.gameObject.tag = "CartaMano";
-                await ChangeTipeAsync();
-
-                d.tipoCarta = Draggable.Slot.MANO;
-            }
-        }
-        else if (GameObject.FindGameObjectWithTag("Campo").transform.childCount <= 7 && gameObject.name == ("Campo") && GameObject.FindGameObjectWithTag("Campo").GetComponent<DropZone>().tipoCarta == Draggable.Slot.CAMPO
-            && d.tipoCarta == Draggable.Slot.MANO && d.tag == "CartaMano")
-        {
-
-            if (d != null)
-            {
-                if (tipoCarta != Draggable.Slot.MANO)
+            if (GameObject.FindGameObjectWithTag("Mano").transform.childCount <= 7 && gameObject.name == ("Mano"))
                 {
-                    d.parentToReturnTo = this.transform;
+                    if (Jugador.GetComponent<ObjetoJugador>().getOro() >= d.GetComponent<ObjetoCarta>().getCoste() && d.tag == "CartaTienda") // bt.Jugador.GetComponent<ObjetoJugador>().getOro() >= d.GetComponent<ObjetoCarta>().getCoste()
+                    {
 
+                        Jugador.GetComponent<ObjetoJugador>().perderOro(d.GetComponent<ObjetoCarta>().getCoste());
+                        d.transform.gameObject.tag = "CartaMano";
+                        d.parentToReturnTo = this.transform;
+                        await ChangeTipeAsync();
+                        d.tipoCarta = Draggable.Slot.MANO;
+
+                    }
+                    else if (d.tag == "CartaCampo")
+                    {
+                        d.parentToReturnTo = this.transform;
+                        d.transform.gameObject.tag = "CartaMano";
+                        await ChangeTipeAsync();
+
+                        d.tipoCarta = Draggable.Slot.MANO;
+                    }
+                }
+                else if (GameObject.FindGameObjectWithTag("Campo").transform.childCount <= 7 && gameObject.name == ("Campo") && d.tag == "CartaMano")
+                {
+                    if (d != null)
+                    {
+                        if (tipoCarta != Draggable.Slot.MANO)
+                        {
+                            d.parentToReturnTo = this.transform;
+
+                            await ChangeTipeAsync();
+
+                            d.transform.gameObject.tag = "CartaCampo";
+                            
+                        }
+
+                    }
+                }
+                else if (gameObject.name == ("VentaCartas"))
+                {
+                    Jugador.GetComponent<ObjetoJugador>().ganarOro(d.GetComponent<ObjetoCarta>().getCoste());
                     await ChangeTipeAsync();
-
-                    d.tipoCarta = Draggable.Slot.CAMPO;
-                    d.transform.gameObject.tag = "CartaCampo";
-                    d.tipoCarta = Draggable.Slot.CARTA_ATAQUE;
-
-
+                    Destroy(d.gameObject);
                 }
 
-            }
-
-        } else if (gameObject.name == ("VentaCartas"))
-        {
-            Jugador.GetComponent<ObjetoJugador>().ganarOro(d.GetComponent<ObjetoCarta>().getCoste());
-            await ChangeTipeAsync();
-            Destroy(d.gameObject);
-        }
-        else if (gameObject.name == ("CampoEnemigo") && d.tipoCarta == Draggable.Slot.CARTA_ATAQUE)
-        {
-            double distancia = 39.3;
-
-            var posicion = -1;
-
-            float num1 = d.transform.position.x;
-            float num2 = 0;
-
-            float left = 0;
-            float right = 0;
-            
-            for (int i = 0; i < gameObject.transform.childCount; i++)
-            {
-
-                num2 = gameObject.transform.GetChild(i).position.x;
-                left = num2 - (float)distancia;
-                right = num2 + (float)distancia;
-
-                if (num1 >= left && num1 <= right)
+                break;
+        case BattleState.ATTACKTURN:
+                
+                if (gameObject.name == ("VentaCartas") && d.tag == "CartaMano")
                 {
-                    posicion = i;
-                    break;
+                    Jugador.GetComponent<ObjetoJugador>().ganarOro(d.GetComponent<ObjetoCarta>().getCoste());
+                    await ChangeTipeAsync();
+                    Destroy(d.gameObject);
                 }
-
-            }
-
-            if (posicion != -1)
-            {
-                GameObject cartaIA = gameObject.transform.GetChild(posicion).gameObject;
-                GameObject cartaPlayer = d.gameObject;
-
-                Debug.Log("Carta puesta sobre:  " + gameObject.transform.GetChild(posicion).name + " con la carta " + d.name);
-
-
-                Debug.Log(cartaIA.GetComponent<ObjetoCarta>().getAtaque() + " " + cartaPlayer.GetComponent<ObjetoCarta>().getAtaque());
-
-                //combate MAMAMDISIMO
-
-                cartaPlayer.GetComponent<ObjetoCarta>().perderVida(cartaIA.GetComponent<ObjetoCarta>().getAtaque());//Se actualiza la vida de las cartas
-                cartaIA.GetComponent<ObjetoCarta>().perderVida(cartaPlayer.GetComponent<ObjetoCarta>().getAtaque());//Se actualiza la vida de las cartas
-
-
-
-                //Si alguna de las cartas muere, se eliminan del campo
-                if (cartaPlayer.GetComponent<ObjetoCarta>().getVida() <= 0)
+                else if (gameObject.name == ("CampoEnemigo") && d.tipoCarta == Draggable.Slot.CARTA_ATAQUE && d.GetComponent<ObjetoCarta>().Activa == true)
                 {
                     await ChangeTipeAsync();
-                    Destroy(cartaPlayer.gameObject);
+                    d.GetComponent<ObjetoCarta>().setAtaqueActivo(true);
+
+                    double distancia = 39.3;
+
+                    var posicion = -1;
+
+                    float num1 = d.transform.position.x;
+                    float num2 = 0;
+
+                    float left = 0;
+                    float right = 0;
+
+                    for (int i = 0; i < gameObject.transform.childCount; i++)
+                    {
+
+                        num2 = gameObject.transform.GetChild(i).position.x;
+                        left = num2 - (float)distancia;
+                        right = num2 + (float)distancia;
+
+                        if (num1 >= left && num1 <= right)
+                        {
+                            posicion = i;
+                            break;
+                        }
+
+                    }
+
+                    if (posicion != -1)
+                    {
+                        GameObject cartaIA = gameObject.transform.GetChild(posicion).gameObject;
+                        GameObject cartaPlayer = d.gameObject;
+
+                        //combate MAMAMDISIMO
+
+                        cartaPlayer.GetComponent<ObjetoCarta>().perderVida(cartaIA.GetComponent<ObjetoCarta>().getAtaque());//Se actualiza la vida de las cartas
+                        cartaIA.GetComponent<ObjetoCarta>().perderVida(cartaPlayer.GetComponent<ObjetoCarta>().getAtaque());//Se actualiza la vida de las cartas
+
+
+
+                        //Si alguna de las cartas muere, se eliminan del campo
+                        if (cartaPlayer.GetComponent<ObjetoCarta>().getVida() <= 0)
+                        {
+                            await ChangeTipeAsync();
+                            Destroy(cartaPlayer.gameObject);
+
+                        }
+
+                        if (cartaIA.GetComponent<ObjetoCarta>().getVida() <= 0)
+                        {
+                            Destroy(cartaIA);
+                        }
+                        else
+                        {
+                            cartaIA.GetComponent<ObjetoCarta>().setActiva(false);
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("No se ha puesto sobre ninguna carta.");
+                    }
 
                 }
-
-                if (cartaIA.GetComponent<ObjetoCarta>().getVida() <= 0)
+                else if (gameObject.name == ("HUDEnemigo") && d.tipoCarta == Draggable.Slot.CARTA_ATAQUE && d.GetComponent<ObjetoCarta>().Activa == true)
                 {
-                    Destroy(cartaIA);
-                }
-                else
-                {
-                    cartaIA.GetComponent<ObjetoCarta>().setActiva(false);
-                }
-            }
-            else
-            {
-                Debug.Log("No se ha puesto sobre ninguna carta.");
-            }
+                    await ChangeTipeAsync();
+                    GameObject.Find("IA").GetComponent<ObjetoJugador>().perderVida(d.GetComponent<ObjetoCarta>().getAtaque());
+                    d.GetComponent<ObjetoCarta>().setAtaqueActivo(true);
 
+                }
+
+                if (GameObject.FindGameObjectWithTag("Mano").transform.childCount <= 7 && gameObject.name == ("Mano") && d.tag == "CartaTienda")
+                {
+                    if (Jugador.GetComponent<ObjetoJugador>().getOro() >= d.GetComponent<ObjetoCarta>().getCoste() && d.tag == "CartaTienda") // bt.Jugador.GetComponent<ObjetoJugador>().getOro() >= d.GetComponent<ObjetoCarta>().getCoste()
+                    {
+
+                        Jugador.GetComponent<ObjetoJugador>().perderOro(d.GetComponent<ObjetoCarta>().getCoste());
+                        d.transform.gameObject.tag = "CartaMano";
+                        d.parentToReturnTo = this.transform;
+                        await ChangeTipeAsync();
+                        d.tipoCarta = Draggable.Slot.MANO;
+
+                    }
+
+                }
+
+                break;
+        case BattleState.ENEMYTURN:
+
+                if (gameObject.name == ("VentaCartas") && d.tag == "CartaMano")
+                {
+                    Jugador.GetComponent<ObjetoJugador>().ganarOro(d.GetComponent<ObjetoCarta>().getCoste());
+                    await ChangeTipeAsync();
+                    Destroy(d.gameObject);
+                }
+                else if (GameObject.FindGameObjectWithTag("Mano").transform.childCount <= 7 && gameObject.name == ("Mano") && d.tag == "CartaTienda")
+                {
+                    if (Jugador.GetComponent<ObjetoJugador>().getOro() >= d.GetComponent<ObjetoCarta>().getCoste() && d.tag == "CartaTienda") // bt.Jugador.GetComponent<ObjetoJugador>().getOro() >= d.GetComponent<ObjetoCarta>().getCoste()
+                    {
+
+                        Jugador.GetComponent<ObjetoJugador>().perderOro(d.GetComponent<ObjetoCarta>().getCoste());
+                        d.transform.gameObject.tag = "CartaMano";
+                        d.parentToReturnTo = this.transform;
+                        await ChangeTipeAsync();
+                        d.tipoCarta = Draggable.Slot.MANO;
+
+                    }
+
+                }
+
+                break;
+       
         }
 
 

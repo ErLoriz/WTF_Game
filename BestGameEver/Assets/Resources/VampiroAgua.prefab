@@ -320,6 +320,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parentToReturnTo: {fileID: 0}
   placeHolderParent: {fileID: 0}
+  Open: 0
   tipoCarta: 0
 --- !u!225 &1311651734038467239
 CanvasGroup:

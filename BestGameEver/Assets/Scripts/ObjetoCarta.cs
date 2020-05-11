@@ -11,7 +11,7 @@ public class ObjetoCarta : MonoBehaviour
     public int Vida;
     public int Coste;
     public bool Activa;
-
+    public bool AtaqueActivo;
 
 
     public enum Elemento {Aire, Agua, Tierra, Fuego};
@@ -72,7 +72,15 @@ public class ObjetoCarta : MonoBehaviour
         Activa = activa;
     }
 
+    public bool getAtaqueActivo()
+    {
+        return AtaqueActivo;
+    }
 
+    public void setAtaqueActivo(bool activa)
+    {
+        AtaqueActivo = activa;
+    }
 
     public void perderVida(int cantidad)
     {

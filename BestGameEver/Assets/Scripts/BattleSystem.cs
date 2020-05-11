@@ -6,7 +6,7 @@ using System.Threading;
 using System;
 using UnityEngine.Animations;
 
-public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST }
+public enum BattleState { START, PLAYERTURN, ATTACKTURN, ENEMYTURN, WON, LOST }
 
 public class BattleSystem : MonoBehaviour
 {
@@ -32,8 +32,6 @@ public class BattleSystem : MonoBehaviour
     public BattleState state;
 
     int time = 0;
-
-    public int turnCounter = 0;
     
     public ObjetoCarta.Elemento tipoElemento;
 
@@ -101,12 +99,21 @@ public class BattleSystem : MonoBehaviour
         OpenPanel_Cartas panel = GameObject.Find("ButtonCartas").GetComponent<OpenPanel_Cartas>();
         panel.forceOpen();
 
+
+        CartasArray = GameObject.FindGameObjectsWithTag("CartaCampo");
+
+        for (int i = 0; i < CartasArray.Length; i++)
+        {
+
+            CartasArray[i].GetComponent<ObjetoCarta>().setActiva(true);
+            CartasArray[i].GetComponent<ObjetoCarta>().setAtaqueActivo(false);
+
+        }
+
         TiendaCartas tienda = GameObject.Find("ButtonReroll").GetComponent<TiendaCartas>();
 
         if (GameObject.FindGameObjectWithTag("Tienda").activeInHierarchy)
             tienda.rerollTurno();
-
-        turnCounter++;
 
         GameObject.FindGameObjectWithTag("Mano").GetComponent<DropZone>().tipoCarta = Draggable.Slot.MANO;
         zone.tipoCarta = Draggable.Slot.CAMPO;
@@ -123,11 +130,35 @@ public class BattleSystem : MonoBehaviour
 
     }
 
+    public void AttackTurn()
+    {
+
+        CartasArray = GameObject.FindGameObjectsWithTag("CartaCampo");
+
+        for (int i = 0; i < CartasArray.Length; i++)
+        {
+            GameObject.Find("Campo").GetComponent<DropZone>().transform.GetChild(i).GetComponent<Draggable>().tipoCarta = Draggable.Slot.CARTA_ATAQUE;
+            //GameObject.Find("Campo").GetComponent<DropZone>().transform.GetChild(i).GetComponent<ObjetoCarta>().setActiva(true);
+            //CartasArray[i].GetComponent<ObjetoCarta>().setActiva(true);
+
+        }
+
+        TextoTurno.text = "Ataque";
+    }
+
     public void OnClickButtonTurn()
     {
 
-        state = BattleState.ENEMYTURN;
-        EnemyTurn();
+        if (state == BattleState.PLAYERTURN)
+        {
+            state = BattleState.ATTACKTURN;
+            AttackTurn();
+        }
+        else if (state == BattleState.ATTACKTURN)
+        {
+            state = BattleState.ENEMYTURN;
+            EnemyTurn();
+        }
 
     }
 
@@ -137,10 +168,8 @@ public class BattleSystem : MonoBehaviour
         //turnCounter++;
 
         CartasArray = GameObject.FindGameObjectsWithTag("CartasManoEn");
-
-        GameObject.FindGameObjectWithTag("Mano").GetComponent<DropZone>().tipoCarta = Draggable.Slot.CAMPO_OFF;
-
-        zone.tipoCarta = Draggable.Slot.CAMPO_OFF;
+        
+       
         botonPasar.enabled = false;
         TextoTurno.text = "Enem.F1";
         Debug.Log("Inicia el turno del enemigo");
@@ -582,7 +611,7 @@ public class BattleSystem : MonoBehaviour
             }
 
     }
-
+    
     void TimeForAI(int tiempo)
     {
         Thread.Sleep(tiempo);
@@ -598,11 +627,6 @@ public class BattleSystem : MonoBehaviour
         }
         );
         return bol;
-    }
-
-    public int turno()
-    {
-        return turnCounter;
     }
 
 }

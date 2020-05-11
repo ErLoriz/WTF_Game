@@ -22,7 +22,7 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
     {
        
 
-        if (tipoCarta == Slot.MANO || this.tipoCarta == Slot.CARTA_ATAQUE)
+        if (tipoCarta == Slot.MANO || this.tipoCarta == Slot.CARTA_ATAQUE && this.GetComponent<ObjetoCarta>().Activa == true && this.GetComponent<ObjetoCarta>().AtaqueActivo == false)
         {
 
             placeholder = new GameObject();
@@ -40,11 +40,9 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
             this.transform.SetParent(this.transform.parent.parent);
             
             GetComponent<CanvasGroup>().blocksRaycasts = false;
-
-            float num1 = (float) 332.5831;
-
             
-            if(this.tag == "CartaMano" || this.tag == "CartaCampo")
+            
+            if(this.tag == "CartaMano" || this.tag == "CartaCampo" && GameObject.Find("BattleSystem").GetComponent<BattleSystem>().state == BattleState.PLAYERTURN)
             {
                 GameObject.Find("VentaCartas").transform.position = new Vector3(GameObject.Find("HUDPanel").transform.position.x, GameObject.Find("HUDPanel").transform.position.y, GameObject.Find("HUDPanel").transform.position.z);
                 Text valor = GameObject.Find("OroVenta").GetComponent<Text>();
@@ -57,7 +55,7 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (tipoCarta == Slot.MANO || this.tipoCarta == Slot.CARTA_ATAQUE)
+        if (tipoCarta == Slot.MANO || this.tipoCarta == Slot.CARTA_ATAQUE && this.GetComponent<ObjetoCarta>().Activa == true && this.GetComponent<ObjetoCarta>().AtaqueActivo == false)
         {
             this.transform.position = eventData.position;
             
@@ -83,7 +81,7 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
     public void OnEndDrag(PointerEventData eventData)
     {
 
-        if (tipoCarta == Slot.MANO || this.tipoCarta == Slot.CARTA_ATAQUE)
+        if (tipoCarta == Slot.MANO || this.tipoCarta == Slot.CARTA_ATAQUE && this.GetComponent<ObjetoCarta>().Activa == true && this.GetComponent<ObjetoCarta>().AtaqueActivo == false)
         {
             
                
@@ -91,7 +89,7 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
             this.transform.SetSiblingIndex(placeholder.transform.GetSiblingIndex());
             GetComponent<CanvasGroup>().blocksRaycasts = true;
             Destroy(placeholder);
-            if (this.tag == "CartaMano" || this.tag == "CartaCampo")
+            if (this.tag == "CartaMano" || this.tag == "CartaCampo" && GameObject.Find("BattleSystem").GetComponent<BattleSystem>().state == BattleState.PLAYERTURN)
             {
                 GameObject.Find("VentaCartas").transform.position = new Vector3(-200, -200, 0);
             }
