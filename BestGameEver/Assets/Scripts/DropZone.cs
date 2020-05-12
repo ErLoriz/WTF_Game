@@ -188,7 +188,7 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
                     }
 
                 }
-                else if (gameObject.name == ("HUDEnemigo") && d.tipoCarta == Draggable.Slot.CARTA_ATAQUE && d.GetComponent<ObjetoCarta>().Activa == true)
+                else if (gameObject.name == ("HUDEnemigo") && d.tipoCarta == Draggable.Slot.CARTA_ATAQUE && d.GetComponent<ObjetoCarta>().Activa == true && d.GetComponent<ObjetoCarta>().AtaqueActivo == false)
                 {
                     await ChangeTipeAsync();
                     GameObject.Find("IA").GetComponent<ObjetoJugador>().perderVida(d.GetComponent<ObjetoCarta>().getAtaque());
