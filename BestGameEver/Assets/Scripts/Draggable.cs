@@ -20,9 +20,9 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
     
     public void OnBeginDrag(PointerEventData eventData)
     {
-       
 
-        if (tipoCarta == Slot.MANO && this.tag != "CartaCampo" || this.tipoCarta == Slot.CARTA_ATAQUE && this.GetComponent<ObjetoCarta>().Activa == true && this.GetComponent<ObjetoCarta>().AtaqueActivo == false)
+
+        if (tipoCarta == Slot.MANO && this.tag != "CartaCampo" || tipoCarta == Slot.MANO && this.tag == "CartaCampo" && GameObject.Find("BattleSystem").GetComponent<BattleSystem>().state == BattleState.PLAYERTURN || this.tipoCarta == Slot.CARTA_ATAQUE && this.GetComponent<ObjetoCarta>().Activa == true && this.GetComponent<ObjetoCarta>().AtaqueActivo == false)
         {
 
             placeholder = new GameObject();
@@ -55,7 +55,7 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (tipoCarta == Slot.MANO && this.tag != "CartaCampo" || this.tipoCarta == Slot.CARTA_ATAQUE && this.GetComponent<ObjetoCarta>().Activa == true && this.GetComponent<ObjetoCarta>().AtaqueActivo == false)
+        if (tipoCarta == Slot.MANO && this.tag != "CartaCampo" || tipoCarta == Slot.MANO && this.tag == "CartaCampo" && GameObject.Find("BattleSystem").GetComponent<BattleSystem>().state == BattleState.PLAYERTURN || this.tipoCarta == Slot.CARTA_ATAQUE && this.GetComponent<ObjetoCarta>().Activa == true && this.GetComponent<ObjetoCarta>().AtaqueActivo == false)
         {
             this.transform.position = eventData.position;
             
@@ -81,7 +81,7 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
     public void OnEndDrag(PointerEventData eventData)
     {
 
-        if (tipoCarta == Slot.MANO && this.tag != "CartaCampo" || this.tipoCarta == Slot.CARTA_ATAQUE && this.GetComponent<ObjetoCarta>().Activa == true && this.GetComponent<ObjetoCarta>().AtaqueActivo == false)
+        if (tipoCarta == Slot.MANO && this.tag != "CartaCampo" || tipoCarta == Slot.MANO && this.tag == "CartaCampo" && GameObject.Find("BattleSystem").GetComponent<BattleSystem>().state == BattleState.PLAYERTURN || this.tipoCarta == Slot.CARTA_ATAQUE && this.GetComponent<ObjetoCarta>().Activa == true && this.GetComponent<ObjetoCarta>().AtaqueActivo == false)
         {
             
                
