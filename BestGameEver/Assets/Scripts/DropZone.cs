@@ -194,6 +194,12 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
                     GameObject.Find("IA").GetComponent<ObjetoJugador>().perderVida(d.GetComponent<ObjetoCarta>().getAtaque());
                     d.GetComponent<ObjetoCarta>().setAtaqueActivo(true);
 
+                    if (GameObject.Find("IA").GetComponent<ObjetoJugador>().getVida() <= 0)
+                    {
+                        GameObject.Find("MarcoVictoria").transform.position = new Vector3(GameObject.Find("Canvas").transform.position.x, GameObject.Find("Canvas").transform.position.y, 0);
+                       
+                    }
+
                 }
 
                 if (GameObject.FindGameObjectWithTag("Mano").transform.childCount <= 7 && gameObject.name == ("Mano") && d.tag == "CartaTienda")

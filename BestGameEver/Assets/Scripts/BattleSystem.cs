@@ -138,8 +138,6 @@ public class BattleSystem : MonoBehaviour
         for (int i = 0; i < CartasArray.Length; i++)
         {
             GameObject.Find("Campo").GetComponent<DropZone>().transform.GetChild(i).GetComponent<Draggable>().tipoCarta = Draggable.Slot.CARTA_ATAQUE;
-            //GameObject.Find("Campo").GetComponent<DropZone>().transform.GetChild(i).GetComponent<ObjetoCarta>().setActiva(true);
-            //CartasArray[i].GetComponent<ObjetoCarta>().setActiva(true);
 
         }
 
@@ -151,8 +149,32 @@ public class BattleSystem : MonoBehaviour
 
         if (state == BattleState.PLAYERTURN)
         {
-            state = BattleState.ATTACKTURN;
-            AttackTurn();
+
+            CartasArray = GameObject.FindGameObjectsWithTag("CartaCampo");
+            int cont = 0;
+            for (int i = 0; i < CartasArray.Length; i++)
+            {
+
+                if (CartasArray[i].GetComponent<ObjetoCarta>().Activa == true)
+                {
+                    cont = 1;
+                    break;
+                }
+                
+
+            }
+
+            if (cont == 1)
+            {
+                state = BattleState.ATTACKTURN;
+                AttackTurn();
+            } else
+            {
+                state = BattleState.ENEMYTURN;
+                EnemyTurn();
+            }
+
+            
         }
         else if (state == BattleState.ATTACKTURN)
         {
@@ -171,8 +193,7 @@ public class BattleSystem : MonoBehaviour
         
        
         botonPasar.enabled = false;
-        TextoTurno.text = "Enem.F1";
-        Debug.Log("Inicia el turno del enemigo");
+        TextoTurno.text = "Enemigo";
 
         IA.GetComponent<ObjetoJugador>().ganarOro(5);
 
@@ -187,7 +208,7 @@ public class BattleSystem : MonoBehaviour
         {
 
             CartasArray[i].GetComponent<ObjetoCarta>().setActiva(true);
-         //   CartasArray[i].GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO_ENEMIGO;
+
         }
 
 
@@ -458,6 +479,14 @@ public class BattleSystem : MonoBehaviour
                             Jugador.GetComponent<ObjetoJugador>().perderVida(CartasIA[i].GetComponent<ObjetoCarta>().getAtaque());
                             CartasIA[i].GetComponent<ObjetoCarta>().setActiva(false);
                             Debug.Log("La Vida del jugador es ahora: " + Jugador.GetComponent<ObjetoJugador>().getVida());
+
+                            if (GameObject.Find("Jugador").GetComponent<ObjetoJugador>().getVida() <= 0)
+                            {
+
+                                GameObject.Find("MarcoDerrota").transform.position = new Vector3(GameObject.Find("Canvas").transform.position.x, GameObject.Find("Canvas").transform.position.y, 0);
+                                
+                            }
+
                         }
 
 

@@ -506,6 +506,7 @@ MonoBehaviour:
   Vida: 6
   Coste: 1
   Activa: 0
+  AtaqueActivo: 0
   tipoElemento: 0
   tipoClase: 0
   T_ataque: {fileID: 3201009856441187798}
