@@ -17,13 +17,16 @@ public class BattleSystem : MonoBehaviour
 
     public bool situacionCompatible;
     public int CartasManoCant;
-    public GameObject[] PlayersArray; 
-    public GameObject Jugador;
-    public GameObject IA;
+    public GameObject[] PlayersArray;
     public GameObject Carta;
     public GameObject CartaEnemiga;
     public GameObject[] CartasArray;
     public Button botonPasar;
+
+    //ComboPanel
+    public GameObject[] ComboPanel;
+    public GameObject ComboPanelPlayer;
+    public GameObject ComboPanelIA;
 
     public Text TextoTurno;
 
@@ -32,7 +35,7 @@ public class BattleSystem : MonoBehaviour
     public BattleState state;
 
     int time = 0;
-    
+
     public ObjetoCarta.Elemento tipoElemento;
 
     public Draggable.Slot tipoCarta;
@@ -40,25 +43,88 @@ public class BattleSystem : MonoBehaviour
 
     public int CartaAleatoria;
 
+    //Jugadores
+    public GameObject Jugador;
+    public GameObject IA;
+
     //cartas
     static GameObject Carta0;
     private GameObject Carta1;
     private GameObject Carta2;
     private GameObject Carta3;
 
+    //Contador combos
+    public int Aire;
+    public int Agua;
+    public int Tierra;
+    public int Fuego;
+    public int Luz;
+    public int Oscuridad;
+
+    public int Protector;
+    public int Guerrero;
+    public int Asesino;
+    public int Mago;
+    public int Pirata;
+    public int Deidad;
+
+
+
+    //Habilidades de combos
+
+    //Ataque primero
+    bool AtaquePrimeroIA = false;
+    bool AtaquePrimeroPlayer = false;
+
+    //Arrollar
+    bool ArrollarIA4 = false;
+    bool ArrollarJugador2 = false;
+    bool ArrollarIA2 = false;
+    bool ArrollarJugador4 = false;
+
+    //Ira
+    bool IraIA = false;
+    bool IraIA2 = false;
+    bool IraPlayer = false;
+    bool IraPlayer2 = false;
+
+    //Asesinos
+    bool Asesino2IA = false;
+    bool AsesinoIA = false;
+
+    //Guerrero 
+    bool Protector1IA = false;
+    bool Protector2IA = false;
+
+    //Luces
+    GameObject imagenActiva;
+
+
 
     // Start is called before the first frame update
     void Start()
     {
         zone = GameObject.FindGameObjectWithTag("Campo").GetComponent<DropZone>();
+
+        //Luces
+        //imagenActiva = GameObject.Find("TierraImagenL").gameObject;
+        //imagenActiva.SetActive(false);
+
+        //Cargar Jugador
         PlayersArray = GameObject.FindGameObjectsWithTag("Jugador");
         Jugador = PlayersArray[0];
-        Debug.LogWarning("Aqui deberia pasar el jugador a la clase dropZone");
-        DropZone.obtenerJugador(Jugador);
 
+        //Cargar ComboPanel
+        ComboPanel = GameObject.FindGameObjectsWithTag("ComboPanelIA");
+        ComboPanelIA = ComboPanel[0];
+
+        //Cargar IA
         PlayersArray = GameObject.FindGameObjectsWithTag("IA");
         IA = PlayersArray[0];
 
+        DropZone.obtenerJugador(Jugador);
+
+        //Iniciar Partida
         state = BattleState.START;
         SetupBattle();
     }
@@ -229,25 +295,99 @@ public class BattleSystem : MonoBehaviour
     {
         GameObject CartaX = null;
 
-        CartaAleatoria = UnityEngine.Random.Range(1, 4);
+        CartaAleatoria = UnityEngine.Random.Range(1, 18);
 
         switch (CartaAleatoria)
         {
             case 1:
-                CartaX = Resources.Load("Angel") as GameObject;
+                CartaX = Resources.Load("01_AireAsesino") as GameObject;
                 CartaX.transform.gameObject.tag = "CartaTienda";
+                CartaX.GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO;
                 break;
             case 2:
-                CartaX = Resources.Load("DemonioRojo") as GameObject;
+                CartaX = Resources.Load("03_AireProtector") as GameObject;
                 CartaX.transform.gameObject.tag = "CartaTienda";
+                CartaX.GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO;
                 break;
             case 3:
-                CartaX = Resources.Load("Segador") as GameObject;
+                CartaX = Resources.Load("04_GiganteMarino") as GameObject;
                 CartaX.transform.gameObject.tag = "CartaTienda";
+                CartaX.GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO;
                 break;
             case 4:
-                CartaX = Resources.Load("VampiroAgua") as GameObject;
+                CartaX = Resources.Load("11_TierraGuerrero") as GameObject;
                 CartaX.transform.gameObject.tag = "CartaTienda";
+                CartaX.GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO;
+                break;
+            case 5:
+                CartaX = Resources.Load("16_FuegoGuerrero") as GameObject;
+                CartaX.transform.gameObject.tag = "CartaTienda";
+                CartaX.GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO;
+                break;
+            case 6:
+                CartaX = Resources.Load("05_VampiroMarino") as GameObject;
+                CartaX.transform.gameObject.tag = "CartaTienda";
+                CartaX.GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO;
+                break;
+            case 7:
+                CartaX = Resources.Load("06_AguaGuerrero") as GameObject;
+                CartaX.transform.gameObject.tag = "CartaTienda";
+                CartaX.GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO;
+                break;
+            case 8:
+                CartaX = Resources.Load("10_SegadorDelBosque") as GameObject;
+                CartaX.transform.gameObject.tag = "CartaTienda";
+                CartaX.GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO;
+                break;
+            case 9:
+                CartaX = Resources.Load("13_TierraPirata") as GameObject;
+                CartaX.transform.gameObject.tag = "CartaTienda";
+                CartaX.GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO;
+                break;
+            case 10:
+                CartaX = Resources.Load("17_FuegoProtector") as GameObject;
+                CartaX.transform.gameObject.tag = "CartaTienda";
+                CartaX.GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO;
+                break;
+            case 11:
+                CartaX = Resources.Load("02_AireGuerrero") as GameObject;
+                CartaX.transform.gameObject.tag = "CartaTienda";
+                CartaX.GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO;
+                break;
+            case 12:
+                CartaX = Resources.Load("07_AguaProtector") as GameObject;
+                CartaX.transform.gameObject.tag = "CartaTienda";
+                CartaX.GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO;
+                break;
+            case 13:
+                CartaX = Resources.Load("09_TierraMago") as GameObject;
+                CartaX.transform.gameObject.tag = "CartaTienda";
+                CartaX.GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO;
+                break;
+            case 14:
+                CartaX = Resources.Load("15_AlmaPerdida") as GameObject;
+                CartaX.transform.gameObject.tag = "CartaTienda";
+                CartaX.GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO;
+                break;
+            case 15:
+                CartaX = Resources.Load("00_AngelSagrado") as GameObject;
+                CartaX.transform.gameObject.tag = "CartaTienda";
+                CartaX.GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO;
+                break;
+            case 16:
+                CartaX = Resources.Load("08_PirataGalactico") as GameObject;
+                CartaX.transform.gameObject.tag = "CartaTienda";
+                CartaX.GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO;
+                break;
+            case 17:
+                CartaX = Resources.Load("12_TierraProtector") as GameObject;
+                CartaX.transform.gameObject.tag = "CartaTienda";
+                CartaX.GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO;
+                break;
+            case 18:
+                CartaX = Resources.Load("14_Incinerador") as GameObject;
+                CartaX.transform.gameObject.tag = "CartaTienda";
+                CartaX.GetComponent<Draggable>().tipoCarta = Draggable.Slot.MANO;
                 break;
         }
 
@@ -428,8 +568,10 @@ public class BattleSystem : MonoBehaviour
         int ataquesCompletados = 0;
         string[] tipoDeSituacion = {"FreeKill","Ablandar","Intercambio","Sacrificio","Cabeza"};
         int x = 0;
-
         int y = 0;
+
+        CartasArray = GameObject.FindGameObjectsWithTag("CartaCampoEn"); // Encuentra todas las cartas en mano de la IA, por primera vez para las combos
+        combos(CartasArray);
         do
         {
          
@@ -468,9 +610,25 @@ public class BattleSystem : MonoBehaviour
                     {
                         if (x != 4)
                         {
-                           // Debug.Log("HOLAAAAA AQUI SE LIMPIAN LOS LIST 5// " + CartasJugador[j].name);
-                          combate(CartasIA[i], CartasJugador[j]);
-                            await TimeForAIAsync(2000);
+
+                            if (CartasIA[i].GetComponent<ObjetoCarta>().getClase().ToString().Equals("Asesino") && AsesinoIA == true) //Habilidad asesino, ataca a cabeza
+                            {
+                                Debug.Log("Asesino activo:" + Asesino);
+                                Jugador.GetComponent<ObjetoJugador>().perderVida(CartasIA[i].GetComponent<ObjetoCarta>().getAtaque());
+                                CartasIA[i].GetComponent<ObjetoCarta>().setActiva(false);
+                            }
+                            else if (CartasIA[i].GetComponent<ObjetoCarta>().getClase().ToString().Equals("Asesino") && Asesino2IA == true)//Habilidad asesino, ataca a cabeza x2
+                            {
+                                Debug.Log("Asesino activo:" + Asesino);
+                                Jugador.GetComponent<ObjetoJugador>().perderVida(CartasIA[i].GetComponent<ObjetoCarta>().getAtaque() * 2);
+                                CartasIA[i].GetComponent<ObjetoCarta>().setActiva(false);
+                            }
+                            else
+                            {
+                                Debug.Log("Asesino no activo:" + Asesino);
+                                combate(CartasIA[i], CartasJugador[j]);
+                                await TimeForAIAsync(2000);
+                            }
 
                         }
                         else
@@ -529,6 +687,14 @@ public class BattleSystem : MonoBehaviour
          //   Debug.Log("CartasContadas: " + CartasIA.Count);
             y++;
         } while (y != 10);
+
+        AtaquePrimeroIA = false;
+        ArrollarIA2 = false;
+        ArrollarIA4 = false;
+        IraIA = false;
+        IraIA2 = false;
+        Asesino2IA = false;
+        AsesinoIA = false;
 
         OpenPanel_Cartas panel = GameObject.Find("ButtonCartas").GetComponent<OpenPanel_Cartas>();
         panel.forceClose();
@@ -617,30 +783,285 @@ public class BattleSystem : MonoBehaviour
 
     public async void combate(GameObject CartaIASelect, GameObject CartaJugadorSelect) //Se le pasan dos cartas 
     {
-        CartaJugadorSelect.GetComponent<ObjetoCarta>().perderVida(CartaIASelect.GetComponent<ObjetoCarta>().getAtaque());//Se actualiza la vida de las cartas
-        CartaIASelect.GetComponent<ObjetoCarta>().perderVida(CartaJugadorSelect.GetComponent<ObjetoCarta>().getAtaque());//Se actualiza la vida de las cartas
+        int vidaPrevciaAlCombate = CartaJugadorSelect.GetComponent<ObjetoCarta>().getVida();
+        //AireIA (AtaquePrimero)
+        if (CartaIASelect.GetComponent<ObjetoCarta>().getElemento().ToString().Equals("Aire") && AtaquePrimeroIA == true)
+        {
+            AtaquePrimero(CartaIASelect, CartaJugadorSelect, vidaPrevciaAlCombate);
+        }
+        //Al final, si no encuentra ningun efecto de cartas, aplica el ataque normal
+        else
+        {
+            CartaIASelect.GetComponent<ObjetoCarta>().perderVida(CartaJugadorSelect.GetComponent<ObjetoCarta>().getAtaque());
+            CartaJugadorSelect.GetComponent<ObjetoCarta>().perderVida(CartaIASelect.GetComponent<ObjetoCarta>().getAtaque());
+        }
+
+
+        if (IraIA == true)
+        {
+            Ira(CartaIASelect, CartaJugadorSelect);
+        }
+
+
+
 
         time = 1000;
-            await TimeForAIAsync(time); //Tiempo de observacion y animacion;
+        await TimeForAIAsync(time); //Tiempo de observacion y animacion;
 
         //Si alguna de las cartas muere, se eliminan del campo
-            if (CartaJugadorSelect.GetComponent<ObjetoCarta>().getVida() <= 0) 
+        if (CartaJugadorSelect.GetComponent<ObjetoCarta>().getVida() <= 0)
+        {
+            DestroyImmediate(CartaJugadorSelect);
+            if (ArrollarIA2 == true && CartaIASelect.GetComponent<ObjetoCarta>().getElemento().ToString().Equals("Tierra"))
             {
-
-                DestroyImmediate(CartaJugadorSelect);
+                Jugador.GetComponent<ObjetoJugador>().perderVida(CartaIASelect.GetComponent<ObjetoCarta>().getAtaque() - vidaPrevciaAlCombate);
             }
+            else if (ArrollarIA4 == true && CartaIASelect.GetComponent<ObjetoCarta>().getElemento().ToString().Equals("Tierra"))
+            {
+                Jugador.GetComponent<ObjetoJugador>().perderVida((CartaIASelect.GetComponent<ObjetoCarta>().getAtaque() - vidaPrevciaAlCombate) * 2);
 
-            if (CartaIASelect.GetComponent<ObjetoCarta>().getVida() <= 0)
-            {
-                DestroyImmediate(CartaIASelect);
             }
-            else
-            {
+        }
+
+        if (CartaIASelect.GetComponent<ObjetoCarta>().getVida() <= 0)
+        {
+            DestroyImmediate(CartaIASelect);
+        }
+        else
+        {
             CartaIASelect.GetComponent<ObjetoCarta>().setActiva(false);
-            }
+        }
 
     }
-    
+
+    void Ira(GameObject cartaIASelect, GameObject cartaJugadorSelect)
+    {
+        if (IraIA2 == true)
+        {
+            cartaIASelect.GetComponent<ObjetoCarta>().setAtaque(cartaIASelect.GetComponent<ObjetoCarta>().getAtaque() + cartaJugadorSelect.GetComponent<ObjetoCarta>().getAtaque() * 3);
+
+        }
+        else
+        {
+            cartaIASelect.GetComponent<ObjetoCarta>().setAtaque(cartaIASelect.GetComponent<ObjetoCarta>().getAtaque() + cartaJugadorSelect.GetComponent<ObjetoCarta>().getAtaque());
+
+        }
+    }
+
+    void AtaquePrimero(GameObject cartaIASelect, GameObject cartaJugadorSelect, int vidaPrevciaAlCombate)
+    {
+        cartaJugadorSelect.GetComponent<ObjetoCarta>().setVida(cartaJugadorSelect.GetComponent<ObjetoCarta>().getVida() - cartaIASelect.GetComponent<ObjetoCarta>().getAtaque());
+
+        if (cartaIASelect.GetComponent<ObjetoCarta>().getAtaque() < vidaPrevciaAlCombate)
+        {
+            cartaIASelect.GetComponent<ObjetoCarta>().perderVida(cartaJugadorSelect.GetComponent<ObjetoCarta>().getAtaque());//Se actualiza la vida de las cartas
+
+        }
+
+    }
+
+    void Proteccion(GameObject cartaIASelect, GameObject cartaJugadorSelect) //Aqui entran las cartas de tipo protector
+    {
+        if (Protector2IA == true)
+        {
+            double vidaDecimal = cartaIASelect.GetComponent<ObjetoCarta>().getVida() - (cartaJugadorSelect.GetComponent<ObjetoCarta>().getAtaque() * 0.6);
+            cartaIASelect.GetComponent<ObjetoCarta>().setVida((int)vidaDecimal);
+            cartaJugadorSelect.GetComponent<ObjetoCarta>().setVida(cartaJugadorSelect.GetComponent<ObjetoCarta>().getVida() - cartaIASelect.GetComponent<ObjetoCarta>().getAtaque());
+
+        }
+        else if (Protector1IA == true)
+        {
+            double vidaDecimal = cartaIASelect.GetComponent<ObjetoCarta>().getVida() - (cartaJugadorSelect.GetComponent<ObjetoCarta>().getAtaque() * 0.3);
+            cartaIASelect.GetComponent<ObjetoCarta>().setVida((int)vidaDecimal);
+            cartaJugadorSelect.GetComponent<ObjetoCarta>().setVida(cartaJugadorSelect.GetComponent<ObjetoCarta>().getVida() - cartaIASelect.GetComponent<ObjetoCarta>().getAtaque());
+        }
+        else
+        {
+
+            cartaIASelect.GetComponent<ObjetoCarta>().setVida(cartaIASelect.GetComponent<ObjetoCarta>().getVida() - cartaJugadorSelect.GetComponent<ObjetoCarta>().getAtaque());
+            cartaJugadorSelect.GetComponent<ObjetoCarta>().setVida(cartaJugadorSelect.GetComponent<ObjetoCarta>().getVida() - cartaIASelect.GetComponent<ObjetoCarta>().getAtaque());
+        }
+    }
+
+    void combos(GameObject[] cartasArray)
+    {
+        Aire = 0; Agua = 0; Tierra = 0; Fuego = 0; Luz = 0; Oscuridad = 0;
+
+        Protector = 0; Guerrero = 0; Asesino = 0; Mago = 0; Pirata = 0; Deidad = 0;
+
+        String Elemento = "";
+        String Clase = "";
+
+
+        for (int i = 0; i < cartasArray.Length; i++)
+        {
+            Elemento = cartasArray[i].GetComponent<ObjetoCarta>().getElemento().ToString();
+            Clase = cartasArray[i].GetComponent<ObjetoCarta>().getClase().ToString();
+
+            if (Elemento.Equals("Aire"))
+            {
+                ++Aire;
+            }
+            else if (Elemento.Equals("Agua"))
+            {
+                ++Agua;
+            }
+            else if (Elemento.Equals("Tierra"))
+            {
+                ++Tierra;
+            }
+            else if (Elemento.Equals("Fuego"))
+            {
+                ++Fuego;
+            }
+            else if (Elemento.Equals("Luz"))
+            {
+                ++Luz;
+            }
+            else if (Elemento.Equals("Oscuridad"))
+            {
+                ++Oscuridad;
+            }
+
+            if (Clase.Equals("Protector"))
+            {
+                ++Protector;
+            }
+            else if (Clase.Equals("Asesino"))
+            {
+                ++Asesino;
+            }
+            else if (Clase.Equals("Guerrero"))
+            {
+                ++Guerrero;
+            }
+            else if (Clase.Equals("Mago"))
+            {
+                ++Mago;
+            }
+            else if (Clase.Equals("Pirata"))
+            {
+                ++Pirata;
+            }
+            else if (Clase.Equals("Deidad"))
+            {
+                ++Deidad;
+            }
+        }
+        //Contadores listos
+  
+
+        //Aire
+        if (Aire >= 6)
+        {
+            AtaquePrimeroIA = true;
+        }
+        else if (Aire >= 3)
+        {
+            AtaquePrimeroIA = true;
+
+        }
+
+
+        //Agua
+        if (Agua >= 6) //6- Cura 3 vida a todas las cartas del campo y jugador
+        {
+            IA.GetComponent<ObjetoJugador>().ganarVida(3);
+            for (int i = 0; i < cartasArray.Length; i++)
+            {
+
+                cartasArray[i].GetComponent<ObjetoCarta>().ganarVida(3);
+                if (cartasArray[i].GetComponent<ObjetoCarta>().getVida() > cartasArray[i].GetComponent<ObjetoCarta>().getVidaDef())
+                {
+                    cartasArray[i].GetComponent<ObjetoCarta>().setVida(cartasArray[i].GetComponent<ObjetoCarta>().getVidaDef());
+                    cartasArray[i].GetComponent<ObjetoCarta>().updateStatis();
+
+                }
+
+            }
+
+        }
+        else if (Agua >= 3)
+        {
+
+            for (int i = 0; i < cartasArray.Length; i++)
+            {
+
+                cartasArray[i].GetComponent<ObjetoCarta>().ganarVida(1);
+
+                if (cartasArray[i].GetComponent<ObjetoCarta>().getVida() > cartasArray[i].GetComponent<ObjetoCarta>().getVidaDef())
+                {
+                    cartasArray[i].GetComponent<ObjetoCarta>().setVida(cartasArray[i].GetComponent<ObjetoCarta>().getVidaDef());
+                    cartasArray[i].GetComponent<ObjetoCarta>().updateStatis();
+
+                }
+
+            }
+        }
+
+        //Tierra
+        if (Tierra >= 4)
+        {
+            ArrollarIA4 = true;
+            //Activar Luz Imagen
+            imagenActiva.SetActive(true);
+        }
+        else if (Tierra >= 2)
+        {
+            ArrollarIA2 = true;
+            //Activar Luz Imagen
+          //  imagenActiva.SetActive(true);
+        }
+        else
+        {
+           // imagenActiva.SetActive(false);
+        }
+
+        //Fuego
+        if (Fuego >= 6)
+        {
+            IraIA = true;
+        }
+        else if (Fuego >= 3)
+        {
+            IraIA = true;
+
+        }
+
+        //Clases
+
+
+        //Asesinos (Ataca siempre al jugador)
+        if (Asesino <= 4)
+        {
+            Asesino2IA = true;
+        }
+        else if (Asesino <= 2)
+        {
+            AsesinoIA = true;
+
+        }
+
+        //Asesinos (Ataca siempre al jugador)
+        if (Guerrero == 4)
+        {
+            Protector2IA = true;
+        }
+        else if (Asesino == 1)
+        {
+            Protector1IA = true;
+
+        }
+
+        Debug.Log("Asesino1:" + AsesinoIA);
+        Debug.Log("Asesino2:" + Asesino2IA);
+
+        ComboPanelIA.GetComponent<ComboPanelObjeto>().setAire(Aire);
+        ComboPanelIA.GetComponent<ComboPanelObjeto>().setAgua(Agua);
+        ComboPanelIA.GetComponent<ComboPanelObjeto>().setTierra(Tierra);
+        ComboPanelIA.GetComponent<ComboPanelObjeto>().setFuego(Fuego);
+    }
+
     void TimeForAI(int tiempo)
     {
         Thread.Sleep(tiempo);

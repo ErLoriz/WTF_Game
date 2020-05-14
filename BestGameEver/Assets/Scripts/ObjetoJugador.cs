@@ -20,16 +20,23 @@ public class ObjetoJugador : MonoBehaviour
         Vida = vida;
     }
 
+
     public void perderVida(int cantidad)
     {
         Vida -= cantidad;
         T_vida.text = Vida.ToString();
     }
 
+    public void ganarVida(int cantidad)
+    {
+        Vida += cantidad;
+        T_vida.text = Vida.ToString();
+    }
+
     public void ganarOro(int cantidad)
     {
         Oro += cantidad;
-       T_Oro.text = Oro.ToString();
+        T_Oro.text = Oro.ToString();
     }
 
     public void perderOro(int cantidad)
@@ -42,4 +49,6 @@ public class ObjetoJugador : MonoBehaviour
     {
         return Oro;
     }
+
+
 }

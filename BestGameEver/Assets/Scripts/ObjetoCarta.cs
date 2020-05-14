@@ -9,14 +9,17 @@ public class ObjetoCarta : MonoBehaviour
  
     public int Ataque;
     public int Vida;
+    public int AtaqueDefault;
+    public int VidaDefault;
     public int Coste;
     public bool Activa;
     public bool AtaqueActivo;
 
 
+
     public enum Elemento {Aire, Agua, Tierra, Fuego};
     public Elemento tipoElemento;
-    public enum Clase {Asesino, Apoyo, Guerrero, Tirador};
+    public enum Clase {Asesino, Protector, Guerrero, Mago, Pirata};
     public Clase tipoClase;
 
     public Text T_ataque;
@@ -72,6 +75,10 @@ public class ObjetoCarta : MonoBehaviour
         Activa = activa;
     }
 
+    public void setAtaque(int ataque)
+    {
+        Ataque = ataque;
+    }
     public bool getAtaqueActivo()
     {
         return AtaqueActivo;
@@ -89,11 +96,30 @@ public class ObjetoCarta : MonoBehaviour
         T_vida.text = Vida.ToString();
 
 
-
+    }
+    public void ganarVida(int cantidad)
+    {
+        Vida += cantidad;
+        //  T_ataque.text = Ataque.ToString();
+        T_vida.text = Vida.ToString();
     }
 
+    public void updateStatis()
+    {
+        T_ataque.text = Ataque.ToString();
+        T_vida.text = Vida.ToString();
+    }
 
-  
+    public int getAtaqueDef()
+    {
+        return AtaqueDefault;
+    }
+
+    public int getVidaDef()
+    {
+        return VidaDefault;
+    }
+
 
 
 }

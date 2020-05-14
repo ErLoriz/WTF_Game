@@ -22,6 +22,8 @@ TagManager:
   - CartaMano
   - Tienda
   - VentaCartas
+  - ComboPanel
+  - ComboPanelIA
   layers:
   - Default
   - TransparentFX

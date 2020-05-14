@@ -27,6 +27,10 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
 
             placeholder = new GameObject();
             placeholder.transform.SetParent(this.transform.parent);
+            Debug.Log("En Draggable aquii");
+            float sph_x = (float)0.4;
+            this.gameObject.transform.localScale += new Vector3(sph_x, sph_x, 0);
+          
             LayoutElement le = placeholder.AddComponent<LayoutElement>();
             le.preferredWidth = placeholder.AddComponent<LayoutElement>().preferredWidth;
             le.preferredHeight = placeholder.AddComponent<LayoutElement>().preferredHeight;
@@ -50,7 +54,7 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
             }
 
         }
-        
+      
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -83,8 +87,9 @@ public class Draggable : MonoBehaviour , IBeginDragHandler , IDragHandler , IEnd
 
         if (tipoCarta == Slot.MANO && this.tag != "CartaCampo" || tipoCarta == Slot.MANO && this.tag == "CartaCampo" && GameObject.Find("BattleSystem").GetComponent<BattleSystem>().state == BattleState.PLAYERTURN || this.tipoCarta == Slot.CARTA_ATAQUE && this.GetComponent<ObjetoCarta>().Activa == true && this.GetComponent<ObjetoCarta>().AtaqueActivo == false)
         {
-            
-               
+          
+            float sph_x = (float)0.4;
+            this.gameObject.transform.localScale -= new Vector3(sph_x, sph_x, 0);
             this.transform.SetParent(parentToReturnTo);
             this.transform.SetSiblingIndex(placeholder.transform.GetSiblingIndex());
             GetComponent<CanvasGroup>().blocksRaycasts = true;
