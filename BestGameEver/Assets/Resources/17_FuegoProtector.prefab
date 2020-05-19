@@ -533,7 +533,7 @@ GameObject:
   - component: {fileID: 2771263627891040316}
   m_Layer: 5
   m_Name: 17_FuegoProtector
-  m_TagString: CartaTienda
+  m_TagString: CartasManoEn
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -611,7 +611,7 @@ MonoBehaviour:
   parentToReturnTo: {fileID: 0}
   placeHolderParent: {fileID: 0}
   Open: 0
-  tipoCarta: 0
+  tipoCarta: 3
 --- !u!114 &833061746623662546
 MonoBehaviour:
   m_ObjectHideFlags: 0

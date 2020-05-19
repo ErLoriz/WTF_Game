@@ -625,6 +625,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battle: {fileID: 0}
+  combos: {fileID: 0}
+  aireComb: 0
+  fuegoComb: 0
 --- !u!225 &5675123574275538228
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -653,6 +656,7 @@ MonoBehaviour:
   Vida: 10
   AtaqueDefault: 10
   VidaDefault: 10
+  Escudo: 0
   Coste: 10
   Activa: 0
   AtaqueActivo: 0
